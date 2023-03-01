@@ -1,27 +1,36 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted,onBeforeUnmount,ref} from "vue";
+import { showElLoading } from '@/utils/common.js';
 import * as THREE from "three";
+import WAVE from 'vanta/src/vanta.waves'
+
+//three.js
 import { OBJLoader, MTLLoader } from 'three-obj-mtl-loader'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { onMounted } from "vue";
+// import CLOUDS from 'vanta/src/vanta.clouds'
 import { gsap } from "gsap";
 let screenDom = ref(null);
 const isRegister = ref(false);
   const formRef = ref();
   const formModel = ref({
+    //登录
     password: '',
     username: '',
-
+    //注册
     nickName: '',
     userName: '',
+    password1: '',
+    password2: ''
   });
     const formRules = ref({
     username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
     password: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
     nickName: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
     userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+    password1: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
+    password2: [{ required: true, validator: null, message: '请再次输入密码', trigger: 'blur' }],
   });
 
   const ok = async () => {
@@ -36,13 +45,37 @@ const isRegister = ref(false);
   };
   //注册
   const registerFn = async ()=>{
-    console.log('注册');
+    showElLoading();
+    const { nickName, userName ,password1,password2} = formModel.value;
+    const [err, res] = await promiseToArr(registerApi({ nickName, userName,password1,password2}));
+    showElLoading(false);
+    if (err) return ElMessage.error(err.message || '注册失败');
+    ElMessage.success(res.message || '注册成功');
+    isRegister.value = false;
   }
   //登录
   const loginFn = async ()=>{
+    showElLoading()
     console.log('登录');
+    showElLoading(false);
   }
+
+  //背景动画 使用ref引用挂载区域
+  const vantaRef=ref(null)
+  let vantaEffect=null;
+
 onMounted(() => {
+  //背景动画
+    vantaEffect=WAVE({
+        el:vantaRef.value,
+        THREE:THREE,
+        //如果需要改变样式，要写在这里
+        //因为这里vantaEffect是没有setOptions这个方法的
+        // color:0xFFC0CB
+        color:0xFFB5C5
+
+    })
+
   // 创建场景
   let scene = new THREE.Scene();
   // 创建相机
@@ -57,13 +90,13 @@ onMounted(() => {
   // 创建渲染器
   let renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-//背景色
-	renderer.setClearColor('#CC9999',0.5);
+  //背景色
+	renderer.setClearColor('#fffff',0);
 
   // 将画布添加到页面中
   screenDom.value.appendChild(renderer.domElement);
 
-//环境光
+  //环境光
   const color = 0xffffff
   const intensity = 1
   const light = new THREE.AmbientLight(color, intensity)
@@ -101,6 +134,7 @@ onMounted(() => {
       let x = (e.clientX / window.innerWidth) * 2 - 1;
       let y = (e.clientY / window.innerHeight) * 2 - 1;
 
+
       let timeline = gsap.timeline();
       timeline.to(gltf.scene.rotation, {
         duration: 0.5,
@@ -122,12 +156,18 @@ onMounted(() => {
     renderer.setSize(window.innerWidth,window.innerHeight)
     //设置渲染器的像素比
     renderer.setPixelRatio(window.devicePixelRatio)
-})
+    })
 });
+onBeforeUnmount(()=>{
+    if(vantaEffect){
+        vantaEffect.destroy()
+    }
+})
 </script>
 
 <template>
   <div class="loginWrap">
+    <div class="vanta" ref='vantaRef'></div>
     <div class="canvas-container" ref="screenDom"></div>
     <div class="rightWrap">
       <div class="rightContent">
@@ -159,7 +199,19 @@ onMounted(() => {
             <el-form-item label="用户名" prop="userName">
               <el-input
                 v-model.trim="formModel.userName"
-                placeholder="账号为用户名，密码默认123456"
+                placeholder="账号为用户名"
+              />
+            </el-form-item>
+            <el-form-item label="密码" prop="password1">
+              <el-input
+                v-model.trim="formModel.password2"
+                placeholder="请输入密码"
+              />
+            </el-form-item>
+            <el-form-item label="密码" prop="password2">
+              <el-input
+                v-model.trim="formModel.password2"
+                placeholder="请再次输入密码"
               />
             </el-form-item>
           </template>
@@ -180,17 +232,24 @@ onMounted(() => {
 
 <style lang="scss" scoped>
   .loginWrap{
-    // background: #f5f5f5;
+    // background: red;
     display: flex;
     height: 100vh;
+    width:100vw;
+    .vanta {
+      width:100vw;
+      height:100vh;
+      position:absolute ;
+      z-index:-1
+    }
     .canvas-container {
       width: 70%;
     }
     .rightWrap {
       width: 25%;
-      height: 50%;
+      height: 60%;
       margin: auto 0;
-      background: #ffffff;
+      background: #ffffffd6;
       box-shadow: 0px -4px 16px #a9a9a9a8;
       display: flex;
       flex-direction: column;
