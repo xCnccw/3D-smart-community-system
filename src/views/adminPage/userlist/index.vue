@@ -34,7 +34,12 @@ import { onMounted, reactive, ref } from 'vue';
 import { Search, Plus } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
 import Drawer from '@/views/adminPage/component/UserDrawer/index.vue'
+import * as umsApi from '@/apis/ums/info.js'
 
+const params = {}
+umsApi.getUmsList(params).then(({ data }) => {
+    console.log(data);
+})
 
 const userlist = ref([])
 userlist.value = [

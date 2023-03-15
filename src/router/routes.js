@@ -13,11 +13,6 @@ const routes = [
         path: '/mainPage',
         component: () => import('@/views/mainPage/index.vue')
     },
-    {
-        name: 'backstagePage',
-        path: '/backstagePage',
-        component: () => import('@/views/backstagePage/index.vue')
-    },
     //后台管理系统
     {
         name: '后台管理系统',
