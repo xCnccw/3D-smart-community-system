@@ -18,7 +18,7 @@ const routes = [
         path: '/backstagePage',
         component: () => import('@/views/backstagePage/index.vue')
     },
-    
+    //测试
 ];
  
 export default routes
