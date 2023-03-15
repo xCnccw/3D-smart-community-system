@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import Menu from '@/component/Menu/index.vue'
-import Toolbar from '@/component/Toolbar/index.vue'
+import Menu from '@/views/adminPage//component/Menu/index.vue'
+import Toolbar from '@/views/adminPage/component/Toolbar/index.vue'
 </script>
 
 <style lang="scss">

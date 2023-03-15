@@ -22,41 +22,41 @@ const routes = [
     {
         name: '后台管理系统',
         path: '/adminMain',
-        component: () => import('@/views/admin/main/index.vue'),
+        component: () => import('@/views/adminPage/main/index.vue'),
         children: [
             {
                 name: '用户管理',
                 path: '/user',
-                component: () => import('@/views/admin/userlist/index.vue'),
+                component: () => import('@/views/adminPage/userlist/index.vue'),
                 children: [
                     {
                         name: '用户列表',
                         path: '/userlist',
-                        component: () => import('@/views/admin/userlist/index.vue'),
+                        component: () => import('@/views/adminPage/userlist/index.vue'),
                     },
                 ]
             },
             {
                 name: '城市管理',
                 path: '/user',
-                component: () => import('@/views/admin/carlist/index.vue'),
+                component: () => import('@/views/adminPage/carlist/index.vue'),
                 children: [
                     {
                         name: '车辆列表',
                         path: '/carlist',
-                        component: () => import('@/views/admin/carlist/index.vue'),
+                        component: () => import('@/views/adminPage/carlist/index.vue'),
                     },
                 ]
             },
             {
                 name: '图标管理',
                 path: '/user',
-                component: () => import('@/views/admin/pie/index.vue'),
+                component: () => import('@/views/adminPage/pie/index.vue'),
                 children: [
                     {
                         name: '饼图',
                         path: '/pie',
-                        component: () => import('@/views/admin/pie/index.vue'),
+                        component: () => import('@/views/adminPage/pie/index.vue'),
                     },
                 ]
             }

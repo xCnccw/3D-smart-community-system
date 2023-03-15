@@ -6,7 +6,7 @@
                     <el-icon>
                         <Plus />
                     </el-icon>
-                    增加车辆
+                    增加角色
                 </el-button></a>
             <el-input class="search" v-model="Searchinput" placeholder="请输入姓名" clearable>
                 <template #append>
@@ -33,7 +33,8 @@
 import { onMounted, reactive, ref } from 'vue';
 import { Search, Plus } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
-import Drawer from '@/component/UserDrawer/index.vue'
+import Drawer from '@/views/adminPage/component/UserDrawer/index.vue'
+
 
 const userlist = ref([])
 userlist.value = [
@@ -56,6 +57,44 @@ userlist.value = [
         state: '0',
     }
 ]
+const Cachelist = ref([])
+Cachelist.value = userlist.value
+
+const Searchinput = ref('')
+const Searchlist = ref([])
+const Searchname = () => {
+    userlist.value = []
+    Searchlist.value = []
+    for (var i = 0; i < Cachelist.value.length; i++) {
+        if (Cachelist.value[i].name == Searchinput.value) {
+            Searchlist.value.push(Cachelist.value[i])
+        }
+    }
+    userlist.value = Searchlist.value
+}
+
+const handleDelete = (index) => {
+    Cachelist.value.splice(index, 1)
+    userlist.value = Cachelist.value
+}
+
+//增加/修改角色
+var isShow = ref(false)
+const Editform = ref({})
+
+const handleAdd = () => {
+    Editform.value = {}
+    isShow.value = true
+}
+
+const handleEdit = (row) => {
+    Editform.value = row
+    isShow.value = true
+}
+
+const handleisShow = (isShownow) => {
+    isShow.value = isShownow.value
+}
 
 </script>
 
