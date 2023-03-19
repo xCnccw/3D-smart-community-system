@@ -1,4 +1,4 @@
-import localstorage from "@/common/storage/localstorage";
+import localstorage from "../storage/localstorage";
 
 const TOKEN_KEY = "digital_hospital_token";
 const USER_INFO_KEY = "digital_hospital_user";

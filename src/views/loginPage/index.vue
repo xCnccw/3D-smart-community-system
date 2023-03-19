@@ -1,9 +1,12 @@
 <script setup>
 import { onMounted,onBeforeUnmount,ref} from "vue";
-import { showElLoading } from '@/utils/common.js';
+import { showElLoading,promiseToArr } from '@/utils/common.js';
 import * as THREE from "three";
 import WAVE from 'vanta/src/vanta.waves'
-
+import { ElMessage } from 'element-plus';
+import { loginApi,registerApi } from '@/apis/login.js';
+import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 //three.js
 import { OBJLoader, MTLLoader } from 'three-obj-mtl-loader'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -12,6 +15,8 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 // import CLOUDS from 'vanta/src/vanta.clouds'
 import { gsap } from "gsap";
 let screenDom = ref(null);
+  const router = useRouter();
+    const store = useStore();
 const isRegister = ref(false);
   const formRef = ref();
   const formModel = ref({
@@ -19,17 +24,17 @@ const isRegister = ref(false);
     password: '',
     username: '',
     //注册
-    nickName: '',
+    // nickName: '',
     userName: '',
-    password1: '',
+    passWord: '',
     password2: ''
   });
     const formRules = ref({
     username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
     password: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
-    nickName: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+    // nickName: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
     userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-    password1: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
+    passWord: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
     password2: [{ required: true, validator: null, message: '请再次输入密码', trigger: 'blur' }],
   });
 
@@ -46,18 +51,38 @@ const isRegister = ref(false);
   //注册
   const registerFn = async ()=>{
     showElLoading();
-    const { nickName, userName ,password1,password2} = formModel.value;
-    const [err, res] = await promiseToArr(registerApi({ nickName, userName,password1,password2}));
-    showElLoading(false);
-    if (err) return ElMessage.error(err.message || '注册失败');
-    ElMessage.success(res.message || '注册成功');
-    isRegister.value = false;
+    const { userName,passWord,password2} = formModel.value;
+    if(passWord===password2){
+      console.log(userName,passWord);
+      const [res] = await promiseToArr(registerApi({"userName":userName,"passWord":passWord}));
+      showElLoading(false);
+      if (res.status===1) return ElMessage.error(res.message || '注册失败');
+      // else{
+        ElMessage.success(res.message || '注册成功');
+        isRegister.value = false;
+      // }
+    }
+    else {
+        showElLoading(false);
+        alert("确保两次输入的密码一致");
+    }
   }
   //登录
   const loginFn = async ()=>{
     showElLoading()
-    console.log('登录');
+    const { username,password} = formModel.value;
+    const [res] = await promiseToArr(loginApi({ username,password}));
     showElLoading(false);
+    if (res.status===1) {return ElMessage.error(res.message || '登录失败');}
+    let { token, userInfo } = res;
+    console.log(res);
+    store.dispatch('userInfoActions', userInfo);
+    store.dispatch('tokenActions', token);
+      ElMessage.success('登录成功')
+      router.push({
+        path: '/mainPage',
+        query: {},
+      });
   }
 
   //背景动画 使用ref引用挂载区域
@@ -180,7 +205,7 @@ onBeforeUnmount(()=>{
           :rules="formRules"
         >
           <template v-if="!isRegister">
-            <el-form-item label="账号" prop="username">
+            <el-form-item label="用户名" prop="username">
               <el-input v-model.trim="formModel.username" placeholder="请输入账号" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
@@ -193,18 +218,18 @@ onBeforeUnmount(()=>{
             </el-form-item>
           </template>
           <template v-else>
-            <el-form-item label="昵称" prop="nickName">
+            <!-- <el-form-item label="昵称" prop="nickName">
               <el-input v-model.trim="formModel.nickName" placeholder="请输入昵称" />
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="用户名" prop="userName">
               <el-input
                 v-model.trim="formModel.userName"
-                placeholder="账号为用户名"
+                placeholder="请输入用户名"
               />
             </el-form-item>
-            <el-form-item label="密码" prop="password1">
+            <el-form-item label="密码" prop="passWord">
               <el-input
-                v-model.trim="formModel.password2"
+                v-model.trim="formModel.passWord"
                 placeholder="请输入密码"
               />
             </el-form-item>

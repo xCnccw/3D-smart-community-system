@@ -22,7 +22,9 @@
     "vanta": "^0.5.24",
     "vue": "^3.2.45",
     "vue-particles": "^1.0.9",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "vuex": "^4.1.0",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

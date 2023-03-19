@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getTokenCache } from "@/common/utils/auth";
+import { getTokenCache } from "./utils/auth";
 
 /**
  * 引入环境变量接口地址

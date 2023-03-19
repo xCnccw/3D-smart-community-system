@@ -4,6 +4,7 @@ import App from './App.vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css';
 import router from './router/index'
+import store from './store/index';
 import VueParticles from 'vue-particles'  
  
 //注意use要在mount之前
@@ -12,6 +13,7 @@ import VueParticles from 'vue-particles'
 const app = createApp(App)
 app.use(ElementPlus)
 app.use(router)
+app.use(store)
 app.use(VueParticles)  
 app.mount('#app')
 
