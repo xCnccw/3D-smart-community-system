@@ -1,21 +1,21 @@
 <template>
     <el-drawer v-model="isShow" :before-close="handleClose" :title="title" class="drawer">
         <el-form :model="form">
-            <el-form-item label="账号" label-width="3vw" :rules="[
+            <el-form-item label="编号" label-width="3vw" :rules="[
                 {
                     required: true,
                 }
             ]">
                 <el-input v-model="form.id" placeholder="请输入..."></el-input>
             </el-form-item>
-            <el-form-item label="姓名" label-width="3vw">
-                <el-input v-model="form.username" placeholder="请输入..."></el-input>
+            <el-form-item label="车名" label-width="3vw">
+                <el-input v-model="form.name" placeholder="请输入..."></el-input>
             </el-form-item>
-            <!-- <el-form-item label="角色" label-width="3vw">
-                <el-input v-model="form.role" placeholder="请输入..."></el-input>
-            </el-form-item> -->
-            <el-form-item label="类型" label-width="3vw">
-                <el-input v-model="form.type" maxlength="1" minlength="1" show-word-limit="1"
+            <el-form-item label="车牌号" label-width="3vw">
+                <el-input v-model="form.license" placeholder="请输入..."></el-input>
+            </el-form-item>
+            <el-form-item label="状态" label-width="3vw">
+                <el-input v-model="form.objectlistId" maxlength="1" minlength="1" show-word-limit="1"
                     placeholder="请输入..."></el-input>
             </el-form-item>
         </el-form>
@@ -28,6 +28,7 @@
 
 <script setup>
 import { ref, onMounted, reactive, toRefs, watch } from "vue";
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const props = defineProps({
     isShow: Boolean,
@@ -37,12 +38,12 @@ const { isShow } = toRefs(props)
 const { Editform } = toRefs(props)
 const emit = defineEmits(['handleClose'])
 
-const title = ref('增加角色')
+const title = ref('增加车辆')
 const form = reactive({
     id: '',
-    username: '',
-    // role: '',
-    type: '',
+    name: '',
+    license: '',
+    objectlistId: '',
 })
 
 const isShownow = ref(false)
@@ -51,18 +52,18 @@ const handleClose = (() => {
 })
 const Decide = () => {
     if (Editform.value.id == '' || Editform.value.id == undefined) {
-        title.value = '增加角色'
+        title.value = '增加车辆'
         form.id = ''
-        form.username = ''
-        // form.role = ''
-        form.type = ''
+        form.name = ''
+        form.license = ''
+        form.objectlistId = ''
     }
     else {
         title.value = '修改信息'
         form.id = Editform.value.id
-        form.username = Editform.value.username
-        // form.role = Editform.value.role
-        form.type = Editform.value.type
+        form.name = Editform.value.name
+        form.license = Editform.value.license
+        form.objectlistId = Editform.value.objectlistId
     }
 }
 //监视Editform,再父组件中每次点击会传入（修改）Editform的值
@@ -71,6 +72,7 @@ watch(Editform, () => {
 })
 
 const Submit = () => {
+
     emit("Submit", form)
 }
 

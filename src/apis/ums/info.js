@@ -16,3 +16,27 @@ export const getUmsList = (params) => {
     data: params
   })
 }
+
+export const deleteUser = (params) => {
+  return request({
+    url: "/admin/delete",
+    method: "post",
+    data: params
+  })
+}
+
+export const updateUser = (params) => {
+  return request({
+    url: "/admin/update",
+    method: "post",
+    data: params
+  })
+}
+
+export const addUser = (params) => {
+  return request({
+    url: "/admin/add",
+    method: "post",
+    data: params
+  })
+}

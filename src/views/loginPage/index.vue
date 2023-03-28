@@ -1,10 +1,10 @@
 <script setup>
-import { onMounted,onBeforeUnmount,ref} from "vue";
-import { showElLoading,promiseToArr } from '@/utils/common.js';
+import { onMounted, onBeforeUnmount, ref } from "vue";
+import { showElLoading, promiseToArr } from '@/utils/common.js';
 import * as THREE from "three";
 import WAVE from 'vanta/src/vanta.waves'
 import { ElMessage } from 'element-plus';
-import { loginApi,registerApi } from '@/apis/login.js';
+import { loginApi, registerApi } from '@/apis/login.js';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 //three.js
@@ -15,91 +15,91 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 // import CLOUDS from 'vanta/src/vanta.clouds'
 import { gsap } from "gsap";
 let screenDom = ref(null);
-  const router = useRouter();
-    const store = useStore();
+const router = useRouter();
+const store = useStore();
 const isRegister = ref(false);
-  const formRef = ref();
-  const formModel = ref({
-    //登录
-    password: '',
-    username: '',
-    //注册
-    // nickName: '',
-    userName: '',
-    passWord: '',
-    password2: ''
-  });
-    const formRules = ref({
-    username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-    password: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
-    // nickName: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-    userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-    passWord: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
-    password2: [{ required: true, validator: null, message: '请再次输入密码', trigger: 'blur' }],
-  });
-
-  const ok = async () => {
-    if (!formRef.value) return;
-    await formRef.value.validate((valid) => {
-      if (valid) {
-        console.log('submit!', formModel.value);
-        // loginFn();
-        isRegister.value ? registerFn() : loginFn();
-      }
-    });
-  };
-  //注册
-  const registerFn = async ()=>{
-    showElLoading();
-    const { userName,passWord,password2} = formModel.value;
-    if(passWord===password2){
-      console.log(userName,passWord);
-      const [res] = await promiseToArr(registerApi({"userName":userName,"passWord":passWord}));
-      showElLoading(false);
-      if (res.status===1) return ElMessage.error(res.message || '注册失败');
-      // else{
-        ElMessage.success(res.message || '注册成功');
-        isRegister.value = false;
-      // }
-    }
-    else {
-        showElLoading(false);
-        alert("确保两次输入的密码一致");
-    }
-  }
+const formRef = ref();
+const formModel = ref({
   //登录
-  const loginFn = async ()=>{
-    showElLoading()
-    const { username,password} = formModel.value;
-    const [res] = await promiseToArr(loginApi({ username,password}));
-    showElLoading(false);
-    if (res.status===1) {return ElMessage.error(res.message || '登录失败');}
-    let { token, userInfo } = res;
-    console.log(res);
-    store.dispatch('userInfoActions', userInfo);
-    store.dispatch('tokenActions', token);
-      ElMessage.success('登录成功')
-      router.push({
-        path: '/mainPage',
-        query: {},
-      });
-  }
+  password: '',
+  username: '',
+  //注册
+  // nickName: '',
+  userName: '',
+  passWord: '',
+  password2: ''
+});
+const formRules = ref({
+  username: [{ required: true, message: '请输入账号', trigger: 'blur' }],
+  password: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
+  // nickName: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
+  userName: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+  passWord: [{ required: true, validator: null, message: '请输入密码', trigger: 'blur' }],
+  password2: [{ required: true, validator: null, message: '请再次输入密码', trigger: 'blur' }],
+});
 
-  //背景动画 使用ref引用挂载区域
-  const vantaRef=ref(null)
-  let vantaEffect=null;
+const ok = async () => {
+  if (!formRef.value) return;
+  await formRef.value.validate((valid) => {
+    if (valid) {
+      console.log('submit!', formModel.value);
+      // loginFn();
+      isRegister.value ? registerFn() : loginFn();
+    }
+  });
+};
+//注册
+const registerFn = async () => {
+  showElLoading();
+  const { userName, passWord, password2 } = formModel.value;
+  if (passWord === password2) {
+    console.log(userName, passWord);
+    const [res] = await promiseToArr(registerApi({ "userName": userName, "passWord": passWord }));
+    showElLoading(false);
+    if (res.status === 1) return ElMessage.error(res.message || '注册失败');
+    // else{
+    ElMessage.success(res.message || '注册成功');
+    isRegister.value = false;
+    // }
+  }
+  else {
+    showElLoading(false);
+    alert("确保两次输入的密码一致");
+  }
+}
+//登录
+const loginFn = async () => {
+  showElLoading()
+  const { username, password } = formModel.value;
+  const [res] = await promiseToArr(loginApi({ username, password }));
+  showElLoading(false);
+  if (res.status === 1) { return ElMessage.error(res.message || '登录失败'); }
+  let { token, userInfo } = res;
+  console.log(res);
+  store.dispatch('userInfoActions', userInfo);
+  store.dispatch('tokenActions', token);
+  ElMessage.success('登录成功')
+  router.push({
+    path: '/mainPage',
+    query: {},
+  });
+}
+
+//背景动画 使用ref引用挂载区域
+const vantaRef = ref(null)
+let vantaEffect = null;
 
 onMounted(() => {
   //背景动画
-    vantaEffect=WAVE({
-        el:vantaRef.value,
-        THREE:THREE,
-        //如果需要改变样式，要写在这里
-        //因为这里vantaEffect是没有setOptions这个方法的
-        // color:0xFFC0CB
-        color:0xFFB5C5
+  vantaEffect = WAVE({
+    el: vantaRef.value,
+    THREE: THREE,
+    //如果需要改变样式，要写在这里
+    //因为这里vantaEffect是没有setOptions这个方法的
+    // color:0xFFC0CB
+    color: 0xFFB5C5
 
-    })
+  })
 
   // 创建场景
   let scene = new THREE.Scene();
@@ -116,7 +116,7 @@ onMounted(() => {
   let renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   //背景色
-	renderer.setClearColor('#fffff',0);
+  renderer.setClearColor('#fffff', 0);
 
   // 将画布添加到页面中
   screenDom.value.appendChild(renderer.domElement);
@@ -150,8 +150,8 @@ onMounted(() => {
   //模型加载
   loader.load("./isometric-smart-city.glb", (gltf) => {
     gltf.scene.scale.set(0.2, 0.2, 0.2);
-    gltf.scene.position.set(-3.5,-3.5, 0);
-    gltf.scene.rotation.y = Math.PI/2; 
+    gltf.scene.position.set(-3.5, -3.5, 0);
+    gltf.scene.rotation.y = Math.PI / 2;
     // gltf.scene.rotation.z = Math.PI/4; 
     scene.add(gltf.scene);
 
@@ -171,22 +171,22 @@ onMounted(() => {
   });
 
   //监听画面变化，更新渲染
-  window.addEventListener('resize',()=>{
+  window.addEventListener('resize', () => {
     console.log("画面变化了");
     //更新摄像头
-    camera.aspect=window.innerWidth/window.innerHeight
+    camera.aspect = window.innerWidth / window.innerHeight
     //更新摄像机投影矩阵
     camera.updateProjectionMatrix()
     //更新渲染器
-    renderer.setSize(window.innerWidth,window.innerHeight)
+    renderer.setSize(window.innerWidth, window.innerHeight)
     //设置渲染器的像素比
     renderer.setPixelRatio(window.devicePixelRatio)
-    })
+  })
 });
-onBeforeUnmount(()=>{
-    if(vantaEffect){
-        vantaEffect.destroy()
-    }
+onBeforeUnmount(() => {
+  if (vantaEffect) {
+    vantaEffect.destroy()
+  }
 })
 </script>
 
@@ -197,57 +197,37 @@ onBeforeUnmount(()=>{
     <div class="rightWrap">
       <div class="rightContent">
         <div class="title">智慧社区平台</div>
-        <el-form
-          class="bob-form"
-          label-position="top"
-          ref="formRef"
-          :model="formModel"
-          :rules="formRules"
-        >
+        <el-form class="bob-form" label-position="top" ref="formRef" :model="formModel" :rules="formRules">
           <template v-if="!isRegister">
             <el-form-item label="用户名" prop="username">
               <el-input v-model.trim="formModel.username" placeholder="请输入账号" />
             </el-form-item>
             <el-form-item label="密码" prop="password">
-              <el-input
-                type="password"
-                show-password
-                v-model.trim="formModel.password"
-                placeholder="请输入密码"
-              />
+              <el-input type="password" show-password v-model.trim="formModel.password" placeholder="请输入密码" />
             </el-form-item>
           </template>
           <template v-else>
             <!-- <el-form-item label="昵称" prop="nickName">
-              <el-input v-model.trim="formModel.nickName" placeholder="请输入昵称" />
-            </el-form-item> -->
+                <el-input v-model.trim="formModel.nickName" placeholder="请输入昵称" />
+              </el-form-item> -->
             <el-form-item label="用户名" prop="userName">
-              <el-input
-                v-model.trim="formModel.userName"
-                placeholder="请输入用户名"
-              />
+              <el-input v-model.trim="formModel.userName" placeholder="请输入用户名" />
             </el-form-item>
             <el-form-item label="密码" prop="passWord">
-              <el-input
-                v-model.trim="formModel.passWord"
-                placeholder="请输入密码"
-              />
+              <el-input v-model.trim="formModel.passWord" placeholder="请输入密码" />
             </el-form-item>
             <el-form-item label="密码" prop="password2">
-              <el-input
-                v-model.trim="formModel.password2"
-                placeholder="请再次输入密码"
-              />
+              <el-input v-model.trim="formModel.password2" placeholder="请再次输入密码" />
             </el-form-item>
           </template>
         </el-form>
-        <button @click="ok" class="ok" >
-          {{isRegister ? '注册':'登录'}}
+        <button @click="ok" class="ok">
+          {{ isRegister ? '注册' : '登录' }}
         </button>
         <div class="register-login-tip">
-          {{!isRegister ? '没有账号？':'已有账号,'}}
-          <el-button type="danger" link @click="isRegister=!isRegister">
-            {{!isRegister ? '去注册' :'去登陆'}}
+          {{ !isRegister ? '没有账号？' : '已有账号,' }}
+          <el-button type="danger" link @click="isRegister = !isRegister">
+            {{ !isRegister ? '去注册' : '去登陆' }}
           </el-button>
         </div>
       </div>
@@ -256,77 +236,84 @@ onBeforeUnmount(()=>{
 </template>
 
 <style lang="scss" scoped>
-  .loginWrap{
-    // background: red;
-    display: flex;
+.loginWrap {
+  // background: red;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+
+  .vanta {
+    width: 100vw;
     height: 100vh;
-    width:100vw;
-    .vanta {
-      width:100vw;
-      height:100vh;
-      position:absolute ;
-      z-index:-1
-    }
-    .canvas-container {
-      width: 70%;
-    }
-    .rightWrap {
-      width: 25%;
-      height: 60%;
-      margin: auto 0;
-      background: #ffffffd6;
-      box-shadow: 0px -4px 16px #a9a9a9a8;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+    position: absolute;
+    z-index: -1
+  }
 
-      .rightContent {
-        .register-login-tip {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 400;
-          font-size: 14px;
-          line-height: 14px;
-          color: #999999;
-          padding-top: 10px;
-        }
-        .title {
-          font-family: 'PingFang SC';
-          font-style: normal;
-          font-weight: 500;
-          font-size: 24px;
-          line-height: 24px;
-          color: #000000;
-          padding-bottom: 48px;
-        }
+  .canvas-container {
+    width: 70%;
+  }
 
-        .ok {
-          background: #EF7579;
-          color:white;
-          border-radius: 4px;
-          width: 320px;
-          height: 40px;
-          margin-top: 20px;
-          border: 0px;
-        }
-          .ok:hover {
-          background: #ed6b6f;
-          color:white;
-          border-radius: 4px;
-          width: 320px;
-          height: 40px;
-          margin-top: 20px;
-          border: 0px;
-        }
-        .bob-form {
-          min-width: 320px;
-        }
-        .loginWrap .rightWrap .rightContent .ok[data-v-e17ea971]{
-          background: CC9999;
-        }
+  .rightWrap {
+    width: 25%;
+    height: 60%;
+    margin: auto 0;
+    background: #ffffffd6;
+    box-shadow: 0px -4px 16px #a9a9a9a8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .rightContent {
+      .register-login-tip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 14px;
+        color: #999999;
+        padding-top: 10px;
+      }
+
+      .title {
+        font-family: 'PingFang SC';
+        font-style: normal;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 24px;
+        color: #000000;
+        padding-bottom: 48px;
+      }
+
+      .ok {
+        background: #EF7579;
+        color: white;
+        border-radius: 4px;
+        width: 320px;
+        height: 40px;
+        margin-top: 20px;
+        border: 0px;
+      }
+
+      .ok:hover {
+        background: #ed6b6f;
+        color: white;
+        border-radius: 4px;
+        width: 320px;
+        height: 40px;
+        margin-top: 20px;
+        border: 0px;
+      }
+
+      .bob-form {
+        min-width: 320px;
+      }
+
+      .loginWrap .rightWrap .rightContent .ok[data-v-e17ea971] {
+        background: CC9999;
       }
     }
   }
+}
 </style>

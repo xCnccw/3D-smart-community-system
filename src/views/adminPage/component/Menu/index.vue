@@ -11,7 +11,7 @@
             <template v-if="title.children">
                 <el-menu-item v-for="item in title.children" :key="item.index" :index="item.index">
                     <el-icon :size="20">
-                        <component :is="title.icon"></component>
+                        <!-- <component :is="title.icon"></component> -->
                     </el-icon>
                     {{ item.itemname }}
                 </el-menu-item>
@@ -22,7 +22,7 @@
 
 <script setup>
 import { ref, onMounted, watchEffect } from "vue";
-import { House, Avatar, HomeFilled, Files, DataLine } from '@element-plus/icons-vue';
+import { HomeFilled, DataLine, User, OfficeBuilding } from '@element-plus/icons-vue';
 
 
 const MenuList = ref([])
@@ -36,24 +36,29 @@ MenuList.value = [
     {
         menutitle: '用户管理',
         index: '/user',
-        icon: Files,
+        icon: User,
         children: [
             {
                 itemname: "用户列表",
                 index: '/userlist',
-                icon: Files,
+                // icon: User,
             },
         ]
     },
     {
         menutitle: '城市管理',
         index: '/city',
-        icon: Avatar,
+        icon: OfficeBuilding,
         children: [
             {
-                itemname: "车辆管理",
+                itemname: "车辆列表",
                 index: '/carlist',
-                icon: Avatar,
+                // icon: Avatar,
+            },
+            {
+                itemname: "建筑列表",
+                index: '/buildingslist',
+                // icon: Avatar,
             }
         ]
     },
@@ -63,9 +68,9 @@ MenuList.value = [
         icon: DataLine,
         children: [
             {
-                itemname: "饼图",
+                itemname: "雷达图",
                 index: '/pie',
-                icon: DataLine,
+                // icon: DataLine,
             }
         ]
     }

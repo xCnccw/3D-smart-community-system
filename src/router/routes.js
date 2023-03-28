@@ -19,10 +19,20 @@ const routes = [
         path: '/adminMain',
         component: () => import('@/views/adminPage/main/index.vue'),
         children: [
+            // {
+            //     name: '用户信息',
+            //     path: '/userinfo',
+            //     component: () => import('@/views/adminPage/userinfo/index.vue'),
+            // },
+            {
+                name: '修改密码',
+                path: '/pwdchange',
+                component: () => import('@/views/adminPage/pwdchange/index.vue'),
+            },
             {
                 name: '用户管理',
                 path: '/user',
-                component: () => import('@/views/adminPage/userlist/index.vue'),
+                // component: () => import('@/views/adminPage/userlist/index.vue'),
                 children: [
                     {
                         name: '用户列表',
@@ -34,22 +44,27 @@ const routes = [
             {
                 name: '城市管理',
                 path: '/user',
-                component: () => import('@/views/adminPage/carlist/index.vue'),
+                // component: () => import('@/views/adminPage/buildings/index.vue'),
                 children: [
                     {
                         name: '车辆列表',
                         path: '/carlist',
                         component: () => import('@/views/adminPage/carlist/index.vue'),
                     },
+                    {
+                        name: '建筑列表',
+                        path: '/buildingslist',
+                        component: () => import('@/views/adminPage/buildings/index.vue'),
+                    },
                 ]
             },
             {
                 name: '图标管理',
                 path: '/user',
-                component: () => import('@/views/adminPage/pie/index.vue'),
+                // component: () => import('@/views/adminPage/pie/index.vue'),
                 children: [
                     {
-                        name: '饼图',
+                        name: '雷达图',
                         path: '/pie',
                         component: () => import('@/views/adminPage/pie/index.vue'),
                     },

@@ -11,20 +11,43 @@
             </el-breadcrumb-item>
         </el-breadcrumb>
         <div class="setting">
-            <a href="#" @click="alert('选项')"><el-cion :size="20">
-                    <Setting />
-                </el-cion></a>
+            <el-dropdown trigger="click">
+                <img class="avatar-image" src="@/assets/avatar-image.jpg" alt="your-avatar">
+                <template #dropdown>
+                    <el-dropdown-menu v-for="item in dropdownmenu">
+                        <el-dropdown-item @click="router.replace(item.path)">{{ item.name }}</el-dropdown-item>
+                    </el-dropdown-menu>
+                </template>
+            </el-dropdown>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watchEffect } from "vue";
+import { ref, onMounted, computed, watchEffect, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { RefreshRight, Setting } from '@element-plus/icons-vue';
 
+
+
 const router = useRouter();
 const breadList = ref([])
+const dropdownmenu = reactive([
+    {
+        name: '修改密码',
+        path: '/pwdchange'
+    },
+    {
+        name: '退出登录',
+        path: '/'
+    }
+])
+
+const showmenu = () => {
+    console.log(dropdownmenu.value);
+}
+
+
 
 watchEffect(
     () => {
@@ -57,10 +80,19 @@ const renovate = () => {
     }
 
     .setting {
-        width: 20px;
-        height: 20px;
-        color: #545c64;
-        margin-left: 68vw;
+        // position: relative;
+        // right: 1vw;
+        margin-left: 65vw;
+
+        .avatar-image {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    }
+
+    .setting :hover {
+        cursor: pointer;
     }
 
     .breadcrumb {
@@ -69,19 +101,15 @@ const renovate = () => {
         .el-breadcrumb__inner {
             color: #8e9397;
             font-weight: 400;
+            pointer-events: none;
         }
 
-        .el-breadcrumb__inner:hover {
-            color: #FFD04B;
-            transition: 0.3s;
-        }
-
-        // color: #767C82;
         .el-breadcrumb__item:last-child .el-breadcrumb__inner {
             font-weight: 700;
             color: #545c64;
         }
     }
+
 
 
 }

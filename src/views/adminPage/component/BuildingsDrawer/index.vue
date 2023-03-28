@@ -1,21 +1,27 @@
 <template>
     <el-drawer v-model="isShow" :before-close="handleClose" :title="title" class="drawer">
         <el-form :model="form">
-            <el-form-item label="账号" label-width="3vw" :rules="[
+            <el-form-item label="编号" label-width="3vw" :rules="[
                 {
                     required: true,
                 }
             ]">
                 <el-input v-model="form.id" placeholder="请输入..."></el-input>
             </el-form-item>
-            <el-form-item label="姓名" label-width="3vw">
-                <el-input v-model="form.username" placeholder="请输入..."></el-input>
+            <el-form-item label="建筑名" label-width="3vw">
+                <el-input v-model="form.name" placeholder="请输入..."></el-input>
             </el-form-item>
-            <!-- <el-form-item label="角色" label-width="3vw">
-                <el-input v-model="form.role" placeholder="请输入..."></el-input>
-            </el-form-item> -->
-            <el-form-item label="类型" label-width="3vw">
-                <el-input v-model="form.type" maxlength="1" minlength="1" show-word-limit="1"
+            <el-form-item label="居民数" label-width="3vw">
+                <el-input v-model="form.livecount" placeholder="请输入..."></el-input>
+            </el-form-item>
+            <el-form-item label="楼层数" label-width="3vw">
+                <el-input v-model="form.floorcount" placeholder="请输入..."></el-input>
+            </el-form-item>
+            <el-form-item label="入住率" label-width="3vw">
+                <el-input v-model="form.checkinrate" placeholder="请输入..."></el-input>
+            </el-form-item>
+            <el-form-item label="状态" label-width="3vw">
+                <el-input v-model="form.objectlistId" maxlength="1" minlength="1" show-word-limit="1"
                     placeholder="请输入..."></el-input>
             </el-form-item>
         </el-form>
@@ -37,12 +43,14 @@ const { isShow } = toRefs(props)
 const { Editform } = toRefs(props)
 const emit = defineEmits(['handleClose'])
 
-const title = ref('增加角色')
+const title = ref('增加建筑')
 const form = reactive({
     id: '',
-    username: '',
-    // role: '',
-    type: '',
+    name: '',
+    livecount: '',
+    floorcount: '',
+    checkinrate: '',
+    objectlistId: '',
 })
 
 const isShownow = ref(false)
@@ -51,18 +59,22 @@ const handleClose = (() => {
 })
 const Decide = () => {
     if (Editform.value.id == '' || Editform.value.id == undefined) {
-        title.value = '增加角色'
+        title.value = '增加车辆'
         form.id = ''
-        form.username = ''
-        // form.role = ''
-        form.type = ''
+        form.name = ''
+        form.checkinrate = ''
+        form.floorcount = ''
+        form.livecount = ''
+        form.objectlistId = ''
     }
     else {
         title.value = '修改信息'
         form.id = Editform.value.id
-        form.username = Editform.value.username
-        // form.role = Editform.value.role
-        form.type = Editform.value.type
+        form.name = Editform.value.name
+        form.livecount = Editform.value.livecount
+        form.floorcount = Editform.value.floorcount
+        form.checkinrate = Editform.value.checkinrate
+        form.objectlistId = Editform.value.objectlistId
     }
 }
 //监视Editform,再父组件中每次点击会传入（修改）Editform的值
@@ -71,6 +83,7 @@ watch(Editform, () => {
 })
 
 const Submit = () => {
+
     emit("Submit", form)
 }
 
