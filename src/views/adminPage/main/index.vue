@@ -5,6 +5,8 @@
         </el-col>
         <el-col :span="21" class="container">
             <Toolbar />
+            <!-- <el-imga src="@/assets/background.jpg"></el-imga> -->
+            <!-- <img src="@/assets/background.jpg"> -->
             <router-view />
         </el-col>
     </el-row>
