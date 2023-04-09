@@ -14,7 +14,7 @@
                 </template>
             </el-input>
         </div>
-        <el-table :data="buildingslist.value" class="table" stripe="true" size="large">
+        <el-table :data="buildingslist.value" class="table" stripe="true" size="large" height="680">
             <el-table-column prop="id" label="编号" />
             <el-table-column prop="name" label="建筑名" />
             <el-table-column prop="livecount" label="居民数" />

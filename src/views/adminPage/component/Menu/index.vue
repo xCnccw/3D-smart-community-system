@@ -1,5 +1,6 @@
 <template>
-    <el-menu active-text-color="#ffd04b" background-color="#001428" class="left-menu" text-color="#fff" router>
+    <el-menu :active-text-color="activeTextColor" :background-color="backgroundColor" class="left-menu"
+        :text-color="textColor" :collapse="isCollapse" router>
         <component v-for="title in MenuList" :key="title.index" :is="title.children ? 'el-sub-menu' : 'el-menu-item'"
             :index="title.index">
             <template #title>
@@ -21,11 +22,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect } from "vue";
+import { ref, onMounted, watch, watchEffect, toRefs } from "vue";
 import { HomeFilled, DataLine, User, OfficeBuilding } from '@element-plus/icons-vue';
 
-
+const backgroundColor = ref("#545c64")
+const textColor = ref("#fff")
+const activeTextColor = ref("#ffd04b")
+const isCollapse = ref(false)
 const MenuList = ref([])
+
+const props = defineProps({
+    menuColor: String
+})
+const { menuColor } = toRefs(props)
+
+watch(() => menuColor.value, (newVal, oldVal) => {
+    if (newVal == '1') {
+        backgroundColor.value = "#545c64"
+        textColor.value = "#fff"
+        activeTextColor.value = "#ffd04b"
+    } else {
+        backgroundColor.value = "#FFFCDE"
+        textColor.value = "#005B18"
+        activeTextColor.value = "#6A5401"
+    }
+})
 
 MenuList.value = [
     {

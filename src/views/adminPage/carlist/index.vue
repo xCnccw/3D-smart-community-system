@@ -14,7 +14,7 @@
                 </template>
             </el-input>
         </div>
-        <el-table :data="carslist.value" class="table" stripe="true" size="large">
+        <el-table :data="carslist.value" class="table" stripe="true" size="large" height="680">
             <el-table-column prop="id" label="编号" />
             <el-table-column prop="name" label="车名" />
             <el-table-column prop="license" label="车牌号" />

@@ -14,7 +14,7 @@
                 </template>
             </el-input>
         </div>
-        <el-table :data="userlist.value" class="table" stripe="true" size="large">
+        <el-table :data="userlist.value" class="table" stripe="true" size="large" height="680">
             <el-table-column prop="id" label="账号" />
             <el-table-column prop="username" label="姓名" />
             <el-table-column prop="type" label="类型" />
@@ -57,12 +57,6 @@ onMounted(() => {
 watchEffect(() => {
     getUserList()
 })
-
-//设置变化常量来监听并更新table
-// var watchtable = ref(0)
-// watch(watchtable, (newVal, oldVal) => {
-//     getUserList()
-// }), { deep: true, immediate: true }
 
 const Searchinput = ref('')
 const Searchlist = ref([])
@@ -145,6 +139,7 @@ const handleEdit = (row) => {
 }
 
 const Submit = (form) => {
+    console.log(form.username, form.type, "Userlist");
     params.id = form.id
     params.username = form.username
     params.type = form.type
@@ -199,6 +194,7 @@ const Submit = (form) => {
 }
 
 const handleisShow = (isShownow) => {
+    console.log("userlist");
     isShow.value = isShownow.value
 }
 

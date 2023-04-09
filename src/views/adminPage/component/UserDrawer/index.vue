@@ -31,7 +31,7 @@ const props = defineProps({
 })
 const { isShow } = toRefs(props)
 const { Editform } = toRefs(props)
-const emit = defineEmits(['handleClose'])
+const emit = defineEmits()
 
 const title = ref('增加角色')
 const form = reactive({

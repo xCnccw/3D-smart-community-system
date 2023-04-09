@@ -10,6 +10,15 @@
                 {{ item.name }}
             </el-breadcrumb-item>
         </el-breadcrumb>
+        <div class="menuColor">
+            <el-popover placement="top-start" title="Title" width="50px" trigger="hover" content="更改菜单栏颜色">
+                <template #reference>
+                    <el-switch v-model="menuColor" active-value="1" inactive-value="0"
+                        @change="(val) => handleMenuColor(val)"
+                        style="--el-switch-on-color: #545c64; --el-switch-off-color: #005B18" />
+                </template>
+            </el-popover>
+        </div>
         <div class="setting">
             <el-dropdown trigger="click">
                 <img class="avatar-image" src="@/assets/avatar-image.jpg" alt="your-avatar">
@@ -28,7 +37,7 @@ import { ref, onMounted, computed, watchEffect, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { RefreshRight, Setting } from '@element-plus/icons-vue';
 
-
+const menuColor = ref("1")
 
 const router = useRouter();
 const breadList = ref([])
@@ -43,11 +52,14 @@ const dropdownmenu = reactive([
     }
 ])
 
+const emit = defineEmits()
+
 const showmenu = () => {
     console.log(dropdownmenu.value);
 }
-
-
+const handleMenuColor = (val) => {
+    emit("handleMenuColor", val)
+}
 
 watchEffect(
     () => {
@@ -79,10 +91,14 @@ const renovate = () => {
         height: 20px;
     }
 
+    .menuColor {
+        margin-left: 60vw;
+    }
+
     .setting {
         // position: relative;
         // right: 1vw;
-        margin-left: 65vw;
+        margin-left: 5vw;
 
         .avatar-image {
             width: 40px;
