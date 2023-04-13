@@ -1,7 +1,7 @@
 <template>
     <el-drawer v-model="isShow" :before-close="handleClose" :title="title" class="drawer">
         <el-form :model="form">
-            <el-form-item label="编号" label-width="3vw">
+            <el-form-item label="Id" label-width="3vw">
                 <el-input v-model="form.id" placeholder="系统自动分配" readonly></el-input>
             </el-form-item>
             <el-form-item label="车名" label-width="3vw">

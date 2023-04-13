@@ -11,10 +11,9 @@
             </el-breadcrumb-item>
         </el-breadcrumb>
         <div class="menuColor">
-            <el-popover placement="top-start" title="Title" width="50px" trigger="hover" content="更改菜单栏颜色">
+            <el-popover placement="top-start" width="30px" trigger="hover" content="风格切换">
                 <template #reference>
-                    <el-switch v-model="menuColor" active-value="1" inactive-value="0"
-                        @change="(val) => handleMenuColor(val)"
+                    <el-switch v-model="menuColor" @change="handleMenuColor()"
                         style="--el-switch-on-color: #545c64; --el-switch-off-color: #005B18" />
                 </template>
             </el-popover>
@@ -35,10 +34,11 @@
 <script setup>
 import { ref, onMounted, computed, watchEffect, reactive } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import { RefreshRight, Setting } from '@element-plus/icons-vue';
 
-const menuColor = ref("1")
-
+const menuColor = ref(true)
+const store = useStore()
 const router = useRouter();
 const breadList = ref([])
 const dropdownmenu = reactive([
@@ -57,8 +57,8 @@ const emit = defineEmits()
 const showmenu = () => {
     console.log(dropdownmenu.value);
 }
-const handleMenuColor = (val) => {
-    emit("handleMenuColor", val)
+const handleMenuColor = () => {
+    store.commit('adminstyle')
 }
 
 watchEffect(
@@ -75,10 +75,10 @@ const renovate = () => {
 <style lang="scss">
 .toolbar {
     display: flex;
-    height: 7vh;
+    height: 56px;
     align-items: center;
     background-color: #fff;
-    margin-bottom: 1vh;
+    // margin-bottom: 10px;
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
     padding-left: 2vw;
 

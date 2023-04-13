@@ -1,13 +1,15 @@
 <template>
-    <el-menu :active-text-color="activeTextColor" :background-color="backgroundColor" class="left-menu"
-        :text-color="textColor" :collapse="isCollapse" router>
+    <el-menu :default-active="activePath" @select="handleSelect" :active-text-color="activeTextColor"
+        :background-color="backgroundColor" class="left-menu" :text-color="textColor" :collapse="isCollapse" router>
         <component v-for="title in MenuList" :key="title.index" :is="title.children ? 'el-sub-menu' : 'el-menu-item'"
-            :index="title.index">
+            :class="title.children ? '' : 'home'"
+            :style="adminstyle ? 'background-color: #ffbb00' : 'background-color:#FFE9A4'" :index="title.index">
             <template #title>
                 <el-icon :size="20">
                     <component :is="title.icon"></component>
                 </el-icon>
                 {{ title.menutitle }}
+                <!-- <button @click="">显示当前页路由</button> -->
             </template>
             <template v-if="title.children">
                 <el-menu-item v-for="item in title.children" :key="item.index" :index="item.index">
@@ -22,22 +24,34 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, watchEffect, toRefs } from "vue";
+import { ref, onMounted, watch, watchEffect, toRefs, computed } from "vue";
 import { HomeFilled, DataLine, User, OfficeBuilding } from '@element-plus/icons-vue';
+import { useRouter, useRoute } from 'vue-router'
+import { useStore } from "vuex";
 
+const route = useRoute()
+const router = useRouter()
+const store = useStore()
 const backgroundColor = ref("#545c64")
 const textColor = ref("#fff")
 const activeTextColor = ref("#ffd04b")
 const isCollapse = ref(false)
 const MenuList = ref([])
+//刷新时根据route.path激活对应menu
 
-const props = defineProps({
-    menuColor: String
+const activePath = ref(route.path)
+
+const adminstyle = computed(() => {
+    return store.state.adminstyle
 })
-const { menuColor } = toRefs(props)
 
-watch(() => menuColor.value, (newVal, oldVal) => {
-    if (newVal == '1') {
+//监视route.path，及时更改并激活对应menu
+watch(() => route.path, (newVal, oldVal) => {
+    activePath.value = newVal
+})
+
+watch(() => adminstyle.value, (newVal, oldVal) => {
+    if (newVal) {
         backgroundColor.value = "#545c64"
         textColor.value = "#fff"
         activeTextColor.value = "#ffd04b"
@@ -48,9 +62,11 @@ watch(() => menuColor.value, (newVal, oldVal) => {
     }
 })
 
+
+
 MenuList.value = [
     {
-        menutitle: '首页',
+        menutitle: '后台管理系统',
         index: '/',
         icon: HomeFilled,
     },
@@ -107,5 +123,12 @@ MenuList.value = [
 .left-menu {
     //让Menu占满整个高度
     height: 100vh;
+}
+
+.home {
+    font-size: larger;
+    pointer-events: none;
+    // text-align: center;
+    // background-color: #ffbb00;
 }
 </style>

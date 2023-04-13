@@ -8,17 +8,24 @@
                     </el-icon>
                     增加车辆
                 </el-button></a>
-            <el-input class="search" v-model="Searchinput" placeholder="请输入车牌号" @keyup="Searching" clearable>
+            <el-input class="search" v-model="Searchinput" placeholder="请输入车牌号" @keyup="Searching(Searchinput)" clearable>
                 <template #append>
                     <el-button :icon="Search" @click="Searchname()" />
                 </template>
             </el-input>
         </div>
         <el-table :data="carslist.value" class="table" stripe="true" size="large" height="680">
-            <el-table-column prop="id" label="编号" />
+            <el-table-column prop="id" label="Id" />
             <el-table-column prop="name" label="车名" />
             <el-table-column prop="license" label="车牌号" />
             <el-table-column prop="objectlistId" label="状态" />
+            <!-- <el-table-column align="center" label="状态">
+                <template #default="scope">
+                    <el-switch v-model="scope.row.objectlistId" active-color="#13ce66" inactive-color="#DCDFE6" active-text="启用"
+                        inactive-text="停用" :active-value="1" :inactive-value="0"
+                        @change="(val) => handleStatus(scope.row, val)"></el-switch>
+                </template>
+            </el-table-column> -->
             <el-table-column fixed="right" label="操作">
                 <template #default="scope">
                     <el-button size="small" type="primary" @click="handleEdit(scope.row)">修改</el-button>
@@ -30,7 +37,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watchEffect } from 'vue';
+import { onMounted, reactive, ref, watchEffect, watch } from 'vue';
 import { Search, Plus } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
 import Drawer from '@/views/adminPage/component/CarsDrawer/index.vue';
@@ -38,15 +45,26 @@ import Drawer from '@/views/adminPage/component/CarsDrawer/index.vue';
 import * as carsApi from '@/apis/cars'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import { ElMessage, ElMessageBox } from 'element-plus'
+import Fuse from 'fuse.js';
 
 var res = ref()
 const params = {}
 const carslist = reactive([])
 const Cachelist = reactive([])
+
+const instance = {
+    fuse: null
+}
 const getCarsList = async () => {
     [res] = await promiseToArr(carsApi.getCarsList(params))
     carslist.value = res
     Cachelist.value = res
+    const options = {
+        keys: ['license']
+    }
+    // 初始化Fuse实例
+    const fuse = new Fuse(Cachelist.value, options)
+    instance.fuse = fuse
 }
 
 onMounted(() => {
@@ -58,24 +76,43 @@ watchEffect(() => {
 })
 
 const Searchinput = ref('')
-const Searchlist = ref([])
+// const Searchlist = ref([])
 //搜索框input的功能
-const Searching = (() => {
-    if (Searchinput.value != '') {
-        for (var i = 0; i < Cachelist.value.length; i++) {
-            if (Cachelist.value[i].license == Searchinput.value) {
-                //判断是否已经存在
-                if (!Searchlist.value.includes(Cachelist.value[i]))
-                    Searchlist.value.push(Cachelist.value[i])
-            }
-        }
-        carslist.value = Searchlist.value
-        //清空Searchlist的值
-        Searchlist.value = []
+const Searching = (Searchinput) => {
+    if (!Searchinput == '') {
+        const result = instance.fuse.search(Searchinput)
+        //格式化数据
+        const formattedResult = result.map(item => item.item)
+        carslist.value = formattedResult
     } else {
         carslist.value = Cachelist.value
     }
+}
+
+//当Searchinput为空时，重置列表
+watch(() => Searchinput.value, (newVal, oldVal) => {
+    if (Searchinput.value == null || Searchinput.value == '') {
+        getCarsList()
+    }
 })
+
+// const Searching = (() => {
+//     if (Searchinput.value != '') {
+//         for (var i = 0; i < Cachelist.value.length; i++) {
+//             if (Cachelist.value[i].license == Searchinput.value) {
+//                 //判断是否已经存在
+//                 if (!Searchlist.value.includes(Cachelist.value[i]))
+//                     Searchlist.value.push(Cachelist.value[i])
+//             }
+//         }
+//         carslist.value = Searchlist.value
+//         //清空Searchlist的值
+//         Searchlist.value = []
+//     } else {
+//         carslist.value = Cachelist.value
+//     }
+// })
+
 
 const handleDelete = (row) => {
     ElMessageBox.confirm(
