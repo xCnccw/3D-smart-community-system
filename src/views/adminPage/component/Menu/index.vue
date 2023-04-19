@@ -105,7 +105,7 @@ MenuList.value = [
         icon: DataLine,
         children: [
             {
-                itemname: "雷达图",
+                itemname: "雷达图表",
                 index: '/pie',
                 // icon: DataLine,
             }

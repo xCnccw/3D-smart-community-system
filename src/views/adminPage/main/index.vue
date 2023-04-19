@@ -4,6 +4,7 @@
             <Menu :menuColor="menuColor" />
         </el-col>
         <el-col :span="21" class="container">
+            <Setting />
             <Toolbar @handleMenuColor="handleMenuColor" />
             <Tags />
             <router-view />
@@ -16,6 +17,7 @@ import { ref } from "vue";
 import Menu from '@/views/adminPage//component/Menu/index.vue'
 import Toolbar from '@/views/adminPage/component/Toolbar/index.vue'
 import Tags from '@/views/adminPage/component/Tags/index.vue'
+import Setting from '@/views/adminPage/component/Setting/index.vue'
 
 const menuColor = ref()
 const handleMenuColor = (val) => {
