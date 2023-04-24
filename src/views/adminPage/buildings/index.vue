@@ -8,14 +8,14 @@
                     </el-icon>
                     添加建筑
                 </el-button></a>
-            <el-input class="search" v-model="Searchinput" placeholder="请输入建筑名" @keyup="Searching" clearable>
+            <el-input class="search" v-model="Searchinput" placeholder="请输入建筑名" @keyup="Searching(Searchinput)" clearable>
                 <template #append>
                     <el-button :icon="Search" @click="Searchname()" />
                 </template>
             </el-input>
         </div>
-        <el-table :data="buildingslist.value" class="table" stripe="true" size="large">
-            <el-table-column prop="id" label="编号" />
+        <el-table :data="buildingslist.value" class="table" stripe="true" size="large" height="680">
+            <el-table-column prop="id" label="Id" />
             <el-table-column prop="name" label="建筑名" />
             <el-table-column prop="livecount" label="居民数" />
             <el-table-column prop="floorcount" label="楼层数" />
@@ -32,22 +32,34 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watchEffect } from 'vue';
+import { onMounted, reactive, ref, watchEffect, watch } from 'vue';
 import { Search, Plus } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
 import Drawer from '@/views/adminPage/component/BuildingsDrawer/index.vue';
 import * as bdApi from '@/apis/buildings'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import { ElMessage, ElMessageBox } from 'element-plus'
+import Fuse from 'fuse.js';
 
 var res = ref()
 const params = {}
 const buildingslist = reactive([])
 const Cachelist = reactive([])
+
+const instance = {
+    fuse: null
+}
+
 const getBuildingsList = async () => {
     [res] = await promiseToArr(bdApi.getBuildingsList(params))
     buildingslist.value = res
     Cachelist.value = res
+    const options = {
+        keys: ['name']
+    }
+    // 初始化Fuse实例
+    const fuse = new Fuse(Cachelist.value, options)
+    instance.fuse = fuse
 }
 
 onMounted(() => {
@@ -61,22 +73,40 @@ watchEffect(() => {
 const Searchinput = ref('')
 const Searchlist = ref([])
 //搜索框input的功能
-const Searching = (() => {
-    if (Searchinput.value != '') {
-        for (var i = 0; i < Cachelist.value.length; i++) {
-            if (Cachelist.value[i].name == Searchinput.value) {
-                //判断是否已经存在
-                if (!Searchlist.value.includes(Cachelist.value[i]))
-                    Searchlist.value.push(Cachelist.value[i])
-            }
-        }
-        buildingslist.value = Searchlist.value
-        //清空Searchlist的值
-        Searchlist.value = []
+const Searching = (Searchinput) => {
+    if (!Searchinput == '') {
+        const result = instance.fuse.search(Searchinput)
+        //格式化数据
+        const formattedResult = result.map(item => item.item)
+        buildingslist.value = formattedResult
     } else {
         buildingslist.value = Cachelist.value
     }
+}
+
+//当Searchinput为空时，重置列表
+watch(() => Searchinput.value, (newVal, oldVal) => {
+    if (Searchinput.value == null || Searchinput.value == '') {
+        getBuildingsList()
+    }
 })
+
+// const Searching = (() => {
+//     if (Searchinput.value != '') {
+//         for (var i = 0; i < Cachelist.value.length; i++) {
+//             if (Cachelist.value[i].name == Searchinput.value) {
+//                 //判断是否已经存在
+//                 if (!Searchlist.value.includes(Cachelist.value[i]))
+//                     Searchlist.value.push(Cachelist.value[i])
+//             }
+//         }
+//         buildingslist.value = Searchlist.value
+//         //清空Searchlist的值
+//         Searchlist.value = []
+//     } else {
+//         buildingslist.value = Cachelist.value
+//     }
+// })
 
 const handleDelete = (row) => {
     ElMessageBox.confirm(

@@ -10,16 +10,6 @@
                 {{ item.name }}
             </el-breadcrumb-item>
         </el-breadcrumb>
-        <div class="setting">
-            <el-dropdown trigger="click">
-                <img class="avatar-image" src="@/assets/avatar-image.jpg" alt="your-avatar">
-                <template #dropdown>
-                    <el-dropdown-menu v-for="item in dropdownmenu">
-                        <el-dropdown-item @click="router.replace(item.path)">{{ item.name }}</el-dropdown-item>
-                    </el-dropdown-menu>
-                </template>
-            </el-dropdown>
-        </div>
     </div>
 </template>
 
@@ -28,26 +18,8 @@ import { ref, onMounted, computed, watchEffect, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { RefreshRight, Setting } from '@element-plus/icons-vue';
 
-
-
 const router = useRouter();
 const breadList = ref([])
-const dropdownmenu = reactive([
-    {
-        name: '修改密码',
-        path: '/pwdchange'
-    },
-    {
-        name: '退出登录',
-        path: '/'
-    }
-])
-
-const showmenu = () => {
-    console.log(dropdownmenu.value);
-}
-
-
 
 watchEffect(
     () => {
@@ -63,10 +35,10 @@ const renovate = () => {
 <style lang="scss">
 .toolbar {
     display: flex;
-    height: 7vh;
+    height: 56px;
     align-items: center;
     background-color: #fff;
-    margin-bottom: 1vh;
+    // margin-bottom: 10px;
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
     padding-left: 2vw;
 
@@ -79,10 +51,14 @@ const renovate = () => {
         height: 20px;
     }
 
+    .menuColor {
+        margin-left: 60vw;
+    }
+
     .setting {
         // position: relative;
         // right: 1vw;
-        margin-left: 65vw;
+        margin-left: 5vw;
 
         .avatar-image {
             width: 40px;

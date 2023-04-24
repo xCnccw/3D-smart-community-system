@@ -8,16 +8,17 @@
                     </el-icon>
                     添加用户
                 </el-button></a>
-            <el-input class="search" v-model="Searchinput" placeholder="请输入姓名" @keyup="Searching" clearable>
+            <!-- @click="search(Searchinput)" -->
+            <el-input class="search" v-model="Searchinput" @keyup="Searching(Searchinput)" placeholder="请输入姓名" clearable>
                 <template #append>
-                    <el-button :icon="Search" @click="Searchname" />
+                    <el-button :icon="Search" />
                 </template>
             </el-input>
         </div>
-        <el-table :data="userlist.value" class="table" stripe="true" size="large">
-            <el-table-column prop="id" label="账号" />
+        <el-table :data="userlist.value" class="table" stripe="true" size="large" height="680">
+            <el-table-column prop="id" label="Id" />
             <el-table-column prop="username" label="姓名" />
-            <el-table-column prop="type" label="类型" />
+            <el-table-column prop="typeLabel" label="类型" />
             <el-table-column fixed="right" label="操作">
                 <template #default="scope">
                     <el-button size="small" type="primary" @click="handleEdit(scope.row)">修改</el-button>
@@ -29,45 +30,75 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, ref, watchEffect, watch } from 'vue';
+import { onMounted, reactive, ref, watchEffect, watch, computed } from 'vue';
 import { Search, Plus, Refresh } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
 import Drawer from '@/views/adminPage/component/UserDrawer/index.vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import * as userApi from '@/apis/user'
+import * as usertextApi from '@/apis/usertext'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
+import Fuse from 'fuse.js';
 
-
+const Searchinput = ref('')
+const Searchlist = ref([])
 var res = ref()
 const params = {}
 // const userlist = reactive([])
 const userlist = reactive([])
 const Cachelist = reactive([])
 
+//Fuse搜索，支持模糊搜索
+const instance = {
+    fuse: null
+}
+// 在方法中调用Fuse搜索
+const Searching = (Searchinput) => {
+    if (!Searchinput == '') {
+        const result = instance.fuse.search(Searchinput)
+        //格式化数据
+        const formattedResult = result.map(item => item.item)
+        userlist.value = formattedResult
+    } else {
+        userlist.value = Cachelist.value
+    }
+}
+
+//当Searchinput为空时，重置列表
+watch(() => Searchinput.value, (newVal, oldVal) => {
+    if (Searchinput.value == null || Searchinput.value == '') {
+        getUserList()
+    }
+})
+
 const getUserList = async () => {
     [res] = await promiseToArr(userApi.getUserList(params))
+    res.map(item => {
+        if (item.type == 1) {
+            item.typeLabel = "超级管理员"
+        } else {
+            item.typeLabel = "普通用户"
+        }
+    })
     userlist.value = res
     Cachelist.value = res
+    //该方法中实例化fuse，确保获取到了userlist.value
+    // 设置搜索选项
+    const options = {
+        keys: ['username']
+    }
+    // 初始化Fuse实例
+    const fuse = new Fuse(Cachelist.value, options)
+    instance.fuse = fuse
 }
 
 onMounted(() => {
     getUserList()
 })
 
-watchEffect(() => {
-    getUserList()
-})
 
-//设置变化常量来监听并更新table
-// var watchtable = ref(0)
-// watch(watchtable, (newVal, oldVal) => {
-//     getUserList()
-// }), { deep: true, immediate: true }
 
-const Searchinput = ref('')
-const Searchlist = ref([])
-
-//搜索按钮功能
+// 搜索按钮功能
 // const Searchname = () => {
 //     promiseToArr(userApi.getUserList(params)).then(() => {
 //         console.log(123);
@@ -81,27 +112,24 @@ const Searchlist = ref([])
 // }
 
 //搜索框input的功能
-const Searching = (() => {
-    if (Searchinput.value != '') {
-        for (var i = 0; i < Cachelist.value.length; i++) {
-            if (Cachelist.value[i].username == Searchinput.value) {
-                //判断是否已经存在
-                if (!Searchlist.value.includes(Cachelist.value[i]))
-                    Searchlist.value.push(Cachelist.value[i])
-            }
-        }
-        userlist.value = Searchlist.value
-        //清空Searchlist的值
-        Searchlist.value = []
-    } else {
-        userlist.value = Cachelist.value
-    }
-})
+// const Searching = (() => {
+//     if (Searchinput.value != '') {
+//         for (var i = 0; i < Cachelist.value.length; i++) {
+//             if (Cachelist.value[i].username == Searchinput.value) {
+//                 //判断是否已经存在
+//                 if (!Searchlist.value.includes(Cachelist.value[i]))
+//                     Searchlist.value.push(Cachelist.value[i])
+//             }
+//         }
+//         userlist.value = Searchlist.value
+//         //清空Searchlist的值
+//         Searchlist.value = []
+//     } else {
+//         userlist.value = Cachelist.value
+//     }
+// })
 
 const handleDelete = (index, row) => {
-    // params.id = row.id
-    // res = await promiseToArr(userApi.deleteUser(params))
-    // watchtable.value = watchtable.value + 1
     ElMessageBox.confirm(
         '确定要删除吗',
         {
@@ -139,12 +167,18 @@ const handleAdd = () => {
 }
 
 const handleEdit = (row) => {
+    if (row.typeLabel == "超级管理员") {
+        row.type = 1
+    } else {
+        row.type = 0
+    }
     Editform.value = row
     isShow.value = true
     isNew.value = false
 }
 
 const Submit = (form) => {
+    console.log(form.username, form.type, "Userlist");
     params.id = form.id
     params.username = form.username
     params.type = form.type
@@ -199,13 +233,15 @@ const Submit = (form) => {
 }
 
 const handleisShow = (isShownow) => {
+    console.log("userlist");
     isShow.value = isShownow.value
 }
-
 </script>
 
 <style lang="scss">
 .content {
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+
     .header {
         display: flex;
         height: 8vh;

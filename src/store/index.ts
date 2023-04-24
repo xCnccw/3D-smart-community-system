@@ -8,6 +8,10 @@ const store = createStore({
       userInfo: {}, //登录后的用户信息
       token: '', //token凭证
       // propertyJson: {}, // {name: label} 用来汇总所有的字段编码和字段描述的
+      //后台管理系统风格
+      adminstyle: true,
+      //存储当前路由
+      // activePath: '/pie'
     };
   },
 
@@ -21,6 +25,12 @@ const store = createStore({
     token(state, value) {
       state.token = value;
     },
+    adminstyle(state) {
+      state.adminstyle = !state.adminstyle
+    },
+    // activePath(state, path){
+    //   state.activePath = path
+    // }
   },
   actions: {
     // increment(context) {

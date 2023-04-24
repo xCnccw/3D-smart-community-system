@@ -1,22 +1,17 @@
 <template>
     <el-drawer v-model="isShow" :before-close="handleClose" :title="title" class="drawer">
         <el-form :model="form">
-            <el-form-item label="账号" label-width="3vw" :rules="[
-                {
-                    required: true,
-                }
-            ]">
-                <el-input v-model="form.id" placeholder="请输入..."></el-input>
+            <el-form-item label="Id" label-width="3vw">
+                <el-input v-model="form.id" readonly="true" placeholder="系统自动分配"></el-input>
             </el-form-item>
             <el-form-item label="姓名" label-width="3vw">
                 <el-input v-model="form.username" placeholder="请输入..."></el-input>
             </el-form-item>
-            <!-- <el-form-item label="角色" label-width="3vw">
-                <el-input v-model="form.role" placeholder="请输入..."></el-input>
-            </el-form-item> -->
             <el-form-item label="类型" label-width="3vw">
-                <el-input v-model="form.type" maxlength="1" minlength="1" show-word-limit="1"
-                    placeholder="请输入..."></el-input>
+                <el-select size="small" v-model="form.type" placeholder="请选择">
+                    <el-option v-for="option in TypeOptions" :key="option.type" :label="option.label"
+                        :value="option.type"></el-option>
+                </el-select>
             </el-form-item>
         </el-form>
         <div class="btn">
@@ -35,13 +30,12 @@ const props = defineProps({
 })
 const { isShow } = toRefs(props)
 const { Editform } = toRefs(props)
-const emit = defineEmits(['handleClose'])
+const emit = defineEmits()
 
 const title = ref('增加角色')
 const form = reactive({
     id: '',
     username: '',
-    // role: '',
     type: '',
 })
 
@@ -54,17 +48,32 @@ const Decide = () => {
         title.value = '增加角色'
         form.id = ''
         form.username = ''
-        // form.role = ''
         form.type = ''
     }
     else {
+        //让el-select中的v-model="form.type"显示为对应的label
+        TypeOptions.map(option => {
+            if (Editform.value.type == option.type) {
+                form.type = option.label
+            }
+        })
         title.value = '修改信息'
         form.id = Editform.value.id
         form.username = Editform.value.username
-        // form.role = Editform.value.role
-        form.type = Editform.value.type
     }
 }
+//类型下拉选项框
+const TypeOptions = reactive([
+    {
+        type: "1",
+        label: '超级管理员',
+    },
+    {
+        type: "0",
+        label: '普通角色',
+    }
+])
+
 //监视Editform,再父组件中每次点击会传入（修改）Editform的值
 watch(Editform, () => {
     Decide()
