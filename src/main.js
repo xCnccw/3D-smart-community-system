@@ -7,6 +7,7 @@ import 'element-plus/dist/index.css';
 import router from './router/index'
 import store from './store/index';
 import VueParticles from 'vue-particles'
+// import VueLocalStorage from 'vue-localstorage'
 
 //注意use要在mount之前
 // createApp(App).use(router).mount('#app')
@@ -16,6 +17,7 @@ app.use(ElementPlus)
 app.use(router)
 app.use(store)
 app.use(VueParticles)
+// app.use(VueLocalStorage)
 app.mount('#app')
 
 // createApp(App).mount('#app')

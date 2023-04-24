@@ -30,7 +30,7 @@ const MenuList = ref([])
 MenuList.value = [
     {
         menutitle: '首页',
-        index: '/',
+        index: '/mainPage',
         icon: HomeFilled,
     },
     {
