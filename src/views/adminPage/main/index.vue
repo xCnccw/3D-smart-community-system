@@ -13,16 +13,23 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Menu from '@/views/adminPage//component/Menu/index.vue'
 import Toolbar from '@/views/adminPage/component/Toolbar/index.vue'
 import Tags from '@/views/adminPage/component/Tags/index.vue'
 import Setting from '@/views/adminPage/component/Setting/index.vue'
+import { useRouter } from "vue-router";
 
 const menuColor = ref()
 const handleMenuColor = (val) => {
     menuColor.value = val
 }
+
+const router = useRouter()
+
+onMounted(() => {
+    router.push('/userlist')
+})
 </script>
 
 <style lang="scss">

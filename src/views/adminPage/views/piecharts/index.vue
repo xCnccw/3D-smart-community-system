@@ -39,7 +39,7 @@
 import { onMounted, reactive, ref, watchEffect, watch } from 'vue';
 import { Search, Plus } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
-import Drawer from '@/views/adminPage/component/ChartsDrawer/index.vue';
+import Drawer from '@/views/adminPage/component/PieDrawer/index.vue';
 // import * as carsApi from '@/apis/cars/info.js';
 import * as chartsApi from '@/apis/charts'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
