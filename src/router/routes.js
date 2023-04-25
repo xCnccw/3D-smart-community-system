@@ -82,9 +82,6 @@ const routes = [
                         name: '柱状图',
                         path: '/barcharts',
                         component: () => import('@/views/adminPage/views/barcharts/index.vue'),
-                        name: '饼图',
-                        path: '/pie',
-                        component: () => import('@/views/adminPage/views/piecharts/index.vue'),
                     },
                 ]
             }
