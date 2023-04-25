@@ -17,15 +17,15 @@
                         <div class="xpanel">
                             <div class="fill-h right_Box">
                                 <div class="left_top">
-                                    <div>建筑名称：</div>
+                                    <div>建筑名称：{{ infoList.name }}</div>
                                     <div style="margin: 10px 0 0 0">
-                                        <!-- 建筑高度：{{ infoList.height }} -->
+                                        建筑高度：{{ infoList.height }}
                                     </div>
 
                                     <div style="margin: 10px 0 10px 0">
-                                        <!-- 建筑层数：{{ infoList.floor }} -->
+                                        建筑层数：{{ infoList.floor }}
                                     </div>
-                                    <!-- <div>建筑占地面积：{{ infoList.square }}</div> -->
+                                    <div>建筑占地面积：{{ infoList.square }}</div>
                                 </div>
                                 <div class="right_top" id="pieTest"></div>
                             </div>
@@ -45,21 +45,21 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, reactive } from "vue";
 import * as THREE from "three";
 import * as echarts from "echarts";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { showElLoading } from '@/utils/common.js';
-// import { buildingDetail } from "@/apis/ums/city.js";
+import { showElLoading, promiseToArr } from '@/utils/common.js';
+import { buildingDetail } from "@/apis/city.js";
 export default {
     setup() {
         let scene, camera, mesh, renderer, controls
         const ball_mesh = ref(null);
         const step = ref(0);
-        const name = getQueryParam()
+        const SoName = getQueryParam()
         const loading = ref(true);
         const sum = ref(0);
         const testdata = [
@@ -69,9 +69,9 @@ export default {
             { value: 80, name: "40-50岁" },
             { value: 60, name: "60岁以上" },
         ];
-        const infoList = ref({
-            name: "",
-            height: "",
+        const infoList = reactive({
+            name: "1",
+            height: "1",
             floor: 0,
             square: "",
             malecount: 0,
@@ -87,9 +87,9 @@ export default {
             init();
             initControls();
             initLight();
-            // buildingDetailMed();
+            buildingDetailMed();
             // initBall();
-            initModel(name).then(() => {
+            initModel(SoName).then(() => {
                 anmiation();
             });
             resize();
@@ -171,7 +171,6 @@ export default {
                                 if (obj) {
                                     obj.children.forEach((child) => {
                                         if (child.name === name) {
-                                            console.log(child);
                                             child.geometry.computeBoundingBox();
                                             const centroid = new THREE.Vector3();
                                             centroid.addVectors(
@@ -198,39 +197,81 @@ export default {
         const anmiation = () => {
             requestAnimationFrame(anmiation);
             controls.update();
-            // console.log(renderer);
             renderer.render(scene, camera);
         }
 
-        // const buildingDetailMed = async () => {
-        //     const res = await buildingDetail();
-        //     console.log(res);
-        //     res.data.detail.forEach((item) => {
-        //         if (item.name === this.$route.query.name) {
-        //             infoList.name = item.name;
-        //             infoList.height = item.height;
-        //             infoList.floor = item.floor;
-        //             infoList.square = item.square;
-        //             infoList.malecount = item.malecount;
-        //             infoList.femalecount = item.femalecount;
-        //             ageStructure.value = item.Funnelcharts;
-        //         }
-        //     });
-        //     ageStructure.value.forEach((element) => {
-        //         const { value, name } = element;
-        //         agelst.push({ value, name });
-        //     });
-        //     initEchart();
-        // };
+        const buildingDetailMed = async () => {
+            const [res] = await promiseToArr(buildingDetail());
+            res.forEach((item) => {
+                if (item.name === SoName) {
+                    infoList.name = item.name;
+                    infoList.height = item.height;
+                    infoList.floor = item.floor;
+                    infoList.square = item.square;
+                    infoList.malecount = item.malecount;
+                    infoList.femalecount = item.femalecount;
+                    // ageStructure.value = item.Funnelcharts;
+                }
+            });
+            // ageStructure.value.forEach((element) => {
+            //     const { value, name } = element;
+            //     agelst.push({ value, name });
+            // });
+            initEchart();
+        };
+        function initEchart() {
+            const chartDom = document.querySelector("#pieTest");
+            const pagechart = echarts.init(chartDom);
+            const option = {
+                tooltip: {
+                    trigger: "item",
+                },
+                legend: {
+                    top: "5%",
+                    left: "center",
+                    textStyle: {
+                        color: "#fff",
+                    },
+                },
+                series: [
+                    {
+                        type: "pie",
+                        radius: ["40%", "70%"],
+                        avoidLabelOverlap: false,
+                        label: {
+                            show: false,
+                            position: "center",
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: "20",
+                                fontWeight: "bold",
+                            },
+                        },
+                        labelLine: {
+                            show: false,
+                        },
+                        data: [
+                            { value: infoList.malecount, name: "男性人数" },
+                            { value: infoList.femalecount, name: "女性人数" },
+                        ],
+                    },
+                ],
+            };
+            pagechart.setOption(option);
+        }
 
 
         // 获取指定参数的值
         function getQueryParam() {
             const search = window.location.search.substring(1); // 去掉问号
-            console.log(search);
             return search; // 如果没有找到名为name的参数，则返回null
         }
 
+        return {
+            infoList
+        }
     }
 }
 

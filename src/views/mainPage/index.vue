@@ -3,51 +3,67 @@
     <el-container>
       <el-aside width="180px">
         <!-- <el-row class="tac"> -->
-          <el-menu active-text-color="#ffd04b" background-color="#001428" class="left-menu" text-color="#fff"
-            default-active="1">
-            <div class="username">
-              <el-icon :size="25" style="position:relative;top:5px;margin: 0 5px 0 10px">
-                <Avatar />
-              </el-icon>
-              <span>{{ userInfo.username }}</span>
-            </div>
-            <el-menu-item index="1" @click="initViewpoint">
+        <el-menu active-text-color="#ffd04b" background-color="#001428" class="left-menu" text-color="#fff"
+          default-active="1" :default-openeds="['8']">
+          <div class="username">
+            <el-icon :size="25" style="position:relative;top:5px;margin: 0 5px 0 10px">
+              <Avatar />
+            </el-icon>
+            <span>{{ userInfo.username }}</span>
+          </div>
+          <el-menu-item index="1" @click="initViewpoint">
+            <el-icon>
+              <Loading />
+            </el-icon>
+            <span>初始化视角</span>
+          </el-menu-item>
+          <el-menu-item index="2" @click="initEchart">
+            <el-icon>
+              <Histogram />
+            </el-icon>
+            <span>查看总体数据</span>
+          </el-menu-item>
+
+          <el-sub-menu index="8" >
+          <template #title>
+            <el-icon>
+              <VideoCamera />
+            </el-icon>
+            <span>环游社区</span>
+          </template>
+          <el-menu-item index="8-1" @click="initTourCity">
+            <el-icon>
+              <Promotion />
+            </el-icon>
+            <span>第一人称</span>
+          </el-menu-item>
+            <el-menu-item index="8-2">
               <el-icon>
-                <Loading />
-              </el-icon>
-              <span>初始化视角</span>
+              <Van />
+            </el-icon>
+            <span>车辆视角</span>
             </el-menu-item>
-            <el-menu-item index="2" @click="initEchart">
-              <el-icon>
-                <Histogram />
-              </el-icon>
-              <span>查看总体数据</span>
-            </el-menu-item>
-            <el-menu-item index="3" @click="initTourCity">
-              <el-icon>
-                <Promotion />
-              </el-icon>
-              <span>环游社区</span>
-            </el-menu-item>
-            <el-menu-item index="4">
-              <el-icon>
-                <setting />
-              </el-icon>
-              <span>Navigator Four</span>
-            </el-menu-item>
-            <el-menu-item v-show="userInfo.type==1" index="9" @click="goAdmin">
-              <el-icon>
-                <Tools />
-              </el-icon>
-              <span>系统后台</span>
-            </el-menu-item>
-            <el-menu-item index="10" @click="out">
-              <el-icon>
-                <SwitchButton />
-              </el-icon>
-              <span>退出登录</span>
-            </el-menu-item>
-          </el-menu>
+        </el-sub-menu>
+
+          <el-menu-item index="4">
+            <el-icon>
+              <setting />
+            </el-icon>
+            <span>Navigator Four</span>
+          </el-menu-item>
+          <el-menu-item v-show="userInfo.type == 1" index="9" @click="goAdmin">
+            <el-icon>
+              <Tools />
+            </el-icon>
+            <span>系统后台</span>
+          </el-menu-item>
+          <el-menu-item index="10" @click="out">
+            <el-icon>
+              <SwitchButton />
+            </el-icon>
+            <span>退出登录</span>
+          </el-menu-item>
+        </el-menu>
         <!-- </el-row> -->
       </el-aside>
 
@@ -80,7 +96,7 @@ import {
 } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 import { initEchartOption1, initEchartOption2 } from "../../utils/echarts";
-import { Avatar, SwitchButton,Promotion,Tools} from '@element-plus/icons-vue';
+import { Avatar, SwitchButton, Promotion, Tools,VideoCamera,Van } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { Main } from "./Main"
 import { before } from "lodash";
@@ -96,7 +112,7 @@ const cityAQI = reactive({
   even_lst: [],
 })
 // 家庭支出统计图
-const consumetable=reactive({
+const consumetable = reactive({
   title: "",
   date_lst: [],
   forecast_lst: [],
@@ -169,7 +185,7 @@ function initEchart() {
   container.appendChild(div2);
 }
 //加载第一人称
-function initTourCity(){
+function initTourCity() {
   mainApp.tourCity()
 }
 //跳转系统后台
@@ -187,7 +203,7 @@ onMounted(() => {
 
   })
 })
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
   mainApp.beforeDestroy()
 })
 
