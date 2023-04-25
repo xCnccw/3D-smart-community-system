@@ -96,7 +96,7 @@ MenuList.value = [
                 itemname: "建筑列表",
                 index: '/buildingslist',
                 // icon: Avatar,
-            }
+            },
         ]
     },
     {
@@ -105,10 +105,20 @@ MenuList.value = [
         icon: DataLine,
         children: [
             {
-                itemname: "雷达图表",
-                index: '/pie',
+                itemname: "雷达图",
+                index: '/piecharts',
                 // icon: DataLine,
-            }
+            },
+            {
+                itemname: "饼图",
+                index: '/BDdetailslist',
+                // icon: Avatar,
+            },
+            {
+                itemname: "柱状图",
+                index: '/barcharts',
+                // icon: Avatar,
+            },
         ]
     }
 ]

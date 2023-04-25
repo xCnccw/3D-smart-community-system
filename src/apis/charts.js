@@ -1,23 +1,31 @@
-import $axios from './axios.js';
+import $axios from "./axios.js";
 
 export const getChartsList = (params) => {
-    console.log(params, 6666);
-    return $axios.post(`/api/charts/list`, params);
+  console.log(params, 6666);
+  return $axios.post(`/api/raycharts/list`, params);
 };
-
-// export const deleteCars = (params) => {
-//     console.log(params, 6666);
-//     return $axios.post(`/api/cars/delete`, params);
-// };
-
-// export const addCars = (params) => {
-//     console.log(params, 6666);
-//     return $axios.post(`/api/cars/add`, params);
-// };
 
 export const updateCharts = (params) => {
-    console.log(params, 6666);
-    return $axios.post(`/api/charts/update`, params);
+  console.log(params, 6666);
+  return $axios.post(`/api/raycharts/update`, params);
 };
 
+export const getbarChartsList = (params) => {
+  console.log(params, 6666);
+  return $axios.post(`/api/barcharts/list`, params);
+};
 
+export const updatebarCharts = (params) => {
+  console.log(params, 6666);
+  return $axios.post(`/api/barcharts/update`, params);
+};
+
+export const getBDdetailsList = (params) => {
+  console.log(params, 9999);
+  return $axios.post(`/api/buildingdetails/list`, params);
+};
+
+export const updateBDdetails = (params) => {
+  console.log(params, "建筑状态参数");
+  return $axios.post(`/api/buildingdetails/update`, params);
+};
