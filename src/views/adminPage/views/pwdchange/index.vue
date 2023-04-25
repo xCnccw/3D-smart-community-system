@@ -6,7 +6,7 @@
         <el-form-item label="新密码" prop="newpwd">
             <el-input v-model="form.newpwd" type="password" />
         </el-form-item>
-        <el-form-item label="确实新密码" prop="confirmpwd">
+        <el-form-item label="确定新密码" prop="confirmpwd">
             <el-input v-model="form.confirmpwd" type="password" />
         </el-form-item>
     </el-form>

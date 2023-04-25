@@ -13,6 +13,11 @@ const routes = [
         path: '/mainPage',
         component: () => import('@/views/mainPage/index.vue')
     },
+    {
+        name: 'detailPage',
+        path: '/detailPage',
+        component: () => import('@/views/detailPage/index.vue')
+    },
     //后台管理系统
     {
         name: '后台管理系统',
@@ -44,7 +49,7 @@ const routes = [
             {
                 name: '城市管理',
                 path: '/user',
-                // component: () => import('@/views/adminPage/buildings/index.vue'),
+                // component: () => import('@/views/adminPage/carlist/index.vue'),
                 children: [
                     {
                         name: '车辆列表',
@@ -77,11 +82,14 @@ const routes = [
                         name: '柱状图',
                         path: '/barcharts',
                         component: () => import('@/views/adminPage/views/barcharts/index.vue'),
+                        name: '饼图',
+                        path: '/pie',
+                        component: () => import('@/views/adminPage/views/pie/index.vue'),
                     },
                 ]
             }
         ]
     },
-];
+]; 
 
 export default routes

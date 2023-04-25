@@ -66,7 +66,7 @@ watch(() => adminstyle.value, (newVal, oldVal) => {
 
 MenuList.value = [
     {
-        menutitle: '后台管理系统',
+        menutitle: '首页',
         index: '/',
         icon: HomeFilled,
     },
