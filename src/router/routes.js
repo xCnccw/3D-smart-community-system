@@ -2,26 +2,31 @@ const routes = [
     {
         path: '/',
         redirect: '/loginPage',
+        meta: { requiresAuth: false },
     },
     {
         name: 'loginPage',
         path: '/loginPage',
+        meta: { requiresAuth: false },
         component: () => import('../views/loginPage/index.vue')
     },
     {
         name: 'mainPage',
         path: '/mainPage',
+        meta: { requiresAuth: true },
         component: () => import('@/views/mainPage/index.vue')
     },
     {
         name: 'detailPage',
         path: '/detailPage',
+        meta: { requiresAuth: true },
         component: () => import('@/views/detailPage/index.vue')
     },
  //后台管理系统
  {
     name: '后台管理系统',
     path: '/adminMain',
+    meta: { requiresAuth: true },
     component: () => import('@/views/adminPage/main/index.vue'),
     children: [
         {

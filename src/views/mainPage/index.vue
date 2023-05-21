@@ -129,7 +129,7 @@ import { useRouter } from 'vue-router';
 import { Main } from "./Main"
 import { before } from "lodash";
 import { getChartsList, getbarChartsList } from "@/apis/charts.js"
-import { notificationsList } from "@/apis/notifications.js"
+import { getnotificationsList } from "@/apis/notifications.js"
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 const router = useRouter();
 const drawer = ref(false)
@@ -244,7 +244,7 @@ function goAdmin() {
 
 //通知弹窗
 const notify = async () => {
-  const [res] = await promiseToArr(notificationsList());
+  const [res] = await promiseToArr(getnotificationsList());
   notifications = res;
   ElNotification({
     title: notifications[0].title,

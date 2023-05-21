@@ -36,7 +36,6 @@ import { useLink } from 'vue-router';
 import Drawer from '@/views/adminPage/component/UserDrawer/index.vue';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import * as userApi from '@/apis/user'
-import * as usertextApi from '@/apis/usertext'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import Fuse from 'fuse.js';
 import * as aiApi from '@/apis/OpenAi_API/openai.js';
