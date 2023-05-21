@@ -76,9 +76,12 @@ watch(() => Searchinput.value, (newVal, oldVal) => {
 const getUserList = async () => {
     [res] = await promiseToArr(userApi.getUserList(params))
     res.map(item => {
-        if (item.type == 1) {
+        if (item.type == 0) {
             item.typeLabel = "超级管理员"
-        } else {
+        } else if(item.type == 1) {
+            item.typeLabel = "普通管理员"
+        }
+        else {
             item.typeLabel = "普通用户"
         }
     })

@@ -1,31 +1,33 @@
 <template>
     <el-menu :default-active="activePath" @select="handleSelect" :active-text-color="activeTextColor"
         :background-color="backgroundColor" class="left-menu" :text-color="textColor" :collapse="isCollapse" router>
-        <component v-for="title in MenuList" :key="title.index" :is="title.children ? 'el-sub-menu' : 'el-menu-item'"
-            :class="title.children ? '' : 'home'"
-            :style="adminstyle ? 'background-color: #ffbb00' : 'background-color:#FFE9A4'" :index="title.index">
-            <template #title>
-                <el-icon :size="20">
-                    <component :is="title.icon"></component>
-                </el-icon>
-                {{ title.menutitle }}
-                <!-- <button @click="">显示当前页路由</button> -->
-            </template>
-            <template v-if="title.children">
-                <el-menu-item v-for="item in title.children" :key="item.index" :index="item.index">
+        <template v-for="title in MenuList" :key="title.index">
+            <component :is="title.children ? 'el-sub-menu' : 'el-menu-item'" :class="title.children ? '' : 'home'"
+                :style="adminstyle ? 'background-color: #ffbb00' : 'background-color:#FFE9A4'" :index="title.index"
+                v-if="title.index !== '/user' || userInfo.type == 0">
+                <template #title>
                     <el-icon :size="20">
-                        <!-- <component :is="title.icon"></component> -->
+                        <component :is="title.icon"></component>
                     </el-icon>
-                    {{ item.itemname }}
-                </el-menu-item>
-            </template>
-        </component>
+                    {{ title.menutitle }}
+                    <!-- <button @click="">显示当前页路由</button> -->
+                </template>
+                <template v-if="title.children">
+                    <el-menu-item v-for="item in title.children" :key="item.index" :index="item.index">
+                        <el-icon :size="20">
+                            <!-- <component :is="title.icon"></component> -->
+                        </el-icon>
+                        {{ item.itemname }}
+                    </el-menu-item>
+                </template>
+            </component>
+        </template>
     </el-menu>
 </template>
 
 <script setup>
 import { ref, onMounted, watch, watchEffect, toRefs, computed } from "vue";
-import { HomeFilled, DataLine, User, OfficeBuilding } from '@element-plus/icons-vue';
+import { HomeFilled, DataLine, User, OfficeBuilding, DocumentCopy } from '@element-plus/icons-vue';
 import { useRouter, useRoute } from 'vue-router'
 import { useStore } from "vuex";
 
@@ -37,8 +39,9 @@ const textColor = ref("#fff")
 const activeTextColor = ref("#ffd04b")
 const isCollapse = ref(false)
 const MenuList = ref([])
-//刷新时根据route.path激活对应menu
+const userInfo = computed(() => JSON.parse(localStorage.getItem('userInfo')))
 
+//刷新时根据route.path激活对应menu
 const activePath = ref(route.path)
 
 const adminstyle = computed(() => {
@@ -51,6 +54,7 @@ watch(() => route.path, (newVal, oldVal) => {
 })
 
 watch(() => adminstyle.value, (newVal, oldVal) => {
+    console.log(store.state.userType, "菜单的userType");
     if (newVal) {
         backgroundColor.value = "#545c64"
         textColor.value = "#fff"
@@ -61,8 +65,6 @@ watch(() => adminstyle.value, (newVal, oldVal) => {
         activeTextColor.value = "#6A5401"
     }
 })
-
-
 
 MenuList.value = [
     {
@@ -78,6 +80,18 @@ MenuList.value = [
             {
                 itemname: "用户列表",
                 index: '/userlist',
+                // icon: User,
+            },
+        ]
+    },
+    {
+        menutitle: '通知管理',
+        index: '/notices',
+        icon: DocumentCopy,
+        children: [
+            {
+                itemname: "通知列表",
+                index: '/notificationslist',
                 // icon: User,
             },
         ]

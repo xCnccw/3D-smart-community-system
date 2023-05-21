@@ -24,26 +24,26 @@
             <span>查看总体数据</span>
           </el-menu-item>
 
-          <el-sub-menu index="8" >
-          <template #title>
-            <el-icon>
-              <VideoCamera />
-            </el-icon>
-            <span>环游社区</span>
-          </template>
-          <el-menu-item index="8-1" @click="initTourCity">
-            <el-icon>
-              <Promotion />
-            </el-icon>
-            <span>第一人称</span>
-          </el-menu-item>
+          <el-sub-menu index="8">
+            <template #title>
+              <el-icon>
+                <VideoCamera />
+              </el-icon>
+              <span>环游社区</span>
+            </template>
+            <el-menu-item index="8-1" @click="initTourCity">
+              <el-icon>
+                <Promotion />
+              </el-icon>
+              <span>第一人称</span>
+            </el-menu-item>
             <el-menu-item index="8-2">
               <el-icon>
-              <Van />
-            </el-icon>
-            <span>车辆视角</span>
+                <Van />
+              </el-icon>
+              <span>车辆视角</span>
             </el-menu-item>
-        </el-sub-menu>
+          </el-sub-menu>
 
           <el-menu-item index="4">
             <el-icon>
@@ -51,7 +51,7 @@
             </el-icon>
             <span>Navigator Four</span>
           </el-menu-item>
-          <el-menu-item v-show="userInfo.type == 1" index="9" @click="goAdmin">
+          <el-menu-item v-show="userInfo.type == 0 || userInfo.type == 1" index="9" @click="goAdmin">
             <el-icon>
               <Tools />
             </el-icon>
@@ -96,7 +96,7 @@ import {
 } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
 import { initEchartOption1, initEchartOption2 } from "../../utils/echarts";
-import { Avatar, SwitchButton, Promotion, Tools,VideoCamera,Van } from '@element-plus/icons-vue';
+import { Avatar, SwitchButton, Promotion, Tools, VideoCamera, Van } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { Main } from "./Main"
 import { before } from "lodash";
@@ -124,7 +124,7 @@ var mainApp = null;
 
 //获取用户信息
 const userInfo = computed(() => JSON.parse(localStorage.getItem('userInfo')))
-console.log(userInfo);
+console.log(userInfo.type, "用户信息");
 //退出登录
 const out = () => {
   localStorage.removeItem('userInfo')

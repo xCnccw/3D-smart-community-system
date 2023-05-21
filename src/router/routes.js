@@ -29,11 +29,11 @@ const routes = [
             path: '/pwdchange',
             component: () => import('@/views/adminPage/views/pwdchange/index.vue'),
         },
-        // {
-        //     name: '智能对话',
-        //     path: '/openai',
-        //     component: () => import('@/views/adminPage/views/openAi/index.vue'),
-        // },
+        {
+            name: '智能对话',
+            path: '/openai',
+            component: () => import('@/views/adminPage/views/openAi/index.vue'),
+        },
         {
             name: '用户管理',
             path: '/user',
@@ -43,6 +43,18 @@ const routes = [
                     name: '用户列表',
                     path: '/userlist',
                     component: () => import('@/views/adminPage/views/userlist/index.vue'),
+                },
+            ]
+        },
+        {
+            name: '通知管理',
+            path: '/notices',
+            // component: () => import('@/views/adminPage/userlist/index.vue'),
+            children: [
+                {
+                    name: '通知列表',
+                    path: '/notificationslist',
+                    component: () => import('@/views/adminPage/views/notificationslist/index.vue'),
                 },
             ]
         },
