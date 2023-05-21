@@ -4,7 +4,7 @@
       <el-aside width="180px">
         <!-- <el-row class="tac"> -->
         <el-menu active-text-color="#ffd04b" background-color="#001428" class="left-menu" text-color="#fff"
-          default-active="1" :default-openeds="['8']">
+          default-active="1" :default-openeds="['2','8']">
           <div class="username">
             <el-icon :size="25" style="position:relative;top:5px;margin: 0 5px 0 10px">
               <Avatar />
@@ -17,41 +17,56 @@
             </el-icon>
             <span>初始化视角</span>
           </el-menu-item>
-          <el-menu-item index="2" @click="initEchart">
-            <el-icon>
-              <Histogram />
-            </el-icon>
-            <span>查看总体数据</span>
-          </el-menu-item>
-
-          <el-sub-menu index="8" >
-          <template #title>
-            <el-icon>
-              <VideoCamera />
-            </el-icon>
-            <span>环游社区</span>
-          </template>
-          <el-menu-item index="8-1" @click="initTourCity">
-            <el-icon>
-              <Promotion />
-            </el-icon>
-            <span>第一人称</span>
-          </el-menu-item>
-            <el-menu-item index="8-2">
+          
+          <el-sub-menu index="2">
+            <template #title>
               <el-icon>
-              <Van />
-            </el-icon>
-            <span>车辆视角</span>
+                <Histogram />
+              </el-icon>
+              <span>查看总体数据</span>
+            </template>
+            <el-menu-item index="2-1" @click="initEchartRay">
+              <el-icon>
+                <PartlyCloudy />
+              </el-icon>
+              <span>空气质量</span>
             </el-menu-item>
-        </el-sub-menu>
+            <el-menu-item index="2-2" @click="initEchartHouse">
+              <el-icon>
+                <HomeFilled />
+              </el-icon>
+              <span>入住户数</span>
+            </el-menu-item>
+          </el-sub-menu>
 
-          <el-menu-item index="4">
+          <el-sub-menu index="8">
+            <template #title>
+              <el-icon>
+                <VideoCamera />
+              </el-icon>
+              <span>环游社区</span>
+            </template>
+            <el-menu-item index="8-1" @click="initTourCity">
+              <el-icon>
+                <Promotion />
+              </el-icon>
+              <span>第一人称</span>
+            </el-menu-item>
+            <el-menu-item index="8-2" @click="initCar">
+              <el-icon>
+                <Van />
+              </el-icon>
+              <span>驾驶模式</span>
+            </el-menu-item>
+          </el-sub-menu>
+
+          <el-menu-item index="4" @click="drawer = true">
             <el-icon>
-              <setting />
+              <ChatLineSquare />
             </el-icon>
-            <span>Navigator Four</span>
+            <span>通知中心</span>
           </el-menu-item>
-          <el-menu-item v-show="userInfo.type == 1" index="9" @click="goAdmin">
+          <el-menu-item v-show="userInfo.type == 1||userInfo.type == 0" index="9" @click="goAdmin">
             <el-icon>
               <Tools />
             </el-icon>
@@ -78,10 +93,22 @@
             <el-divider />
           </div>
         </el-card>
-        <div id="chart1" class="chart chartLayout"></div>
-        <div id="chart2" class="chart chartLayout"></div>
+        <div id="chart1" class="chart1 chartLayout"></div>
+        <div id="chart2" class="chart2 chartLayout"></div>
       </el-main>
     </el-container>
+    <el-drawer
+    v-model="drawer"
+    title="通知中心"
+    :direction="direction"
+    :before-close="handleClose"
+  >
+  <el-table :data="notifications" style="width: 100%" dark="true">
+    <el-table-column prop="title" fixed label="标题" width="100" />
+    <el-table-column prop="releaseTime" label="日期" width="200" />
+    <el-table-column prop="content" label="详情" width="500" />
+  </el-table>
+  </el-drawer>
   </div>
 </template>
 
@@ -91,40 +118,47 @@ import {
   Document,
   Menu as IconMenu,
   Loading,
-  Setting,
+  ChatLineSquare,
   Histogram,
 } from "@element-plus/icons-vue";
 import * as echarts from "echarts";
+import { ElNotification } from 'element-plus';
 import { initEchartOption1, initEchartOption2 } from "../../utils/echarts";
-import { Avatar, SwitchButton, Promotion, Tools,VideoCamera,Van } from '@element-plus/icons-vue';
+import { Avatar, SwitchButton, Promotion, Tools, VideoCamera, Van,PartlyCloudy,HomeFilled } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import { Main } from "./Main"
 import { before } from "lodash";
+import { getChartsList, getbarChartsList } from "@/apis/charts.js"
+import { notificationsList } from "@/apis/notifications.js"
+import { showElLoading, promiseToArr } from '@/utils/common.js';
 const router = useRouter();
-
+const drawer = ref(false)
+const direction = ref('rtl')
 const containerRef = ref(null)
 const dataInfo = ref([])
+let notifications
 // 城市空气质量雷达图
-const cityAQI = reactive({
+const cityAQI = ref({
   title: "",
   mor_lst: [],
   noon_lst: [],
   even_lst: [],
 })
 // 家庭支出统计图
-const consumetable = reactive({
+const consumetable = ref({
   title: "",
   date_lst: [],
   forecast_lst: [],
   real_lst: [],
 })
 
+
+
 var mainApp = null;
 
 
 //获取用户信息
 const userInfo = computed(() => JSON.parse(localStorage.getItem('userInfo')))
-console.log(userInfo);
 //退出登录
 const out = () => {
   localStorage.removeItem('userInfo')
@@ -134,29 +168,43 @@ const out = () => {
 
 //加载初始化视角
 function initViewpoint() {
-  console.log('initViewpoint', mainApp);
   mainApp.initViewpoint()
 }
-//加载echart表
-function initEchart() {
-  for (const ele of document.querySelectorAll(".chart")) {
+//加载空气质量echart表
+function initEchartRay() {
+  for (const ele of document.querySelectorAll(".chart1")) {
     ele.style.display = ele.style.display === "block" ? "none" : "block";
   }
   const div1 = document.querySelector("#chart1");
-  const div2 = document.querySelector("#chart2");
+
   const pageChart1 = echarts.init(div1);
-  const pageChart2 = echarts.init(div2);
-  const dataBJ = cityAQI.mor_lst;
-  const dataGZ = cityAQI.noon_lst;
-  const dataSH = cityAQI.even_lst;
+
+  const dataBJ = cityAQI.value.mor_lst;
+  const dataGZ = cityAQI.value.noon_lst;
+  const dataSH = cityAQI.value.even_lst;
   const lineStyle = {
     width: 1,
     opacity: 0.8,
   };
   pageChart1.setOption(
-    initEchartOption1(cityAQI.title, lineStyle, dataBJ, dataGZ, dataSH)
+    initEchartOption1(cityAQI.value.title, lineStyle, dataBJ, dataGZ, dataSH)
   );
   container.appendChild(div1);
+}
+//加载入住户数echart表
+function initEchartHouse() {
+  for (const ele of document.querySelectorAll(".chart2")) {
+    ele.style.display = ele.style.display === "block" ? "none" : "block";
+  }
+  const div2 = document.querySelector("#chart2");
+  const pageChart2 = echarts.init(div2);
+  pageChart2.setOption(
+    initEchartOption2(
+      consumetable.value.date_lst,
+      consumetable.value.real_lst,
+      consumetable.value.forecast_lst
+    )
+  );
   pageChart2.on("updateAxisPointer", function (event) {
     const xAxisInfo = event.axesInfo[0];
     if (xAxisInfo) {
@@ -175,38 +223,97 @@ function initEchart() {
       });
     }
   });
-  pageChart2.setOption(
-    initEchartOption2(
-      consumetable.date_lst,
-      consumetable.real_lst,
-      consumetable.forecast_lst
-    )
-  );
   container.appendChild(div2);
 }
 //加载第一人称
 function initTourCity() {
   mainApp.tourCity()
 }
+//加载车辆视角 
+function initCar() {
+  mainApp.initCar()
+}
+//加载巴士视角
+function initBusView() {
+  mainApp.initBusView()
+}
 //跳转系统后台
 function goAdmin() {
   router.push('/adminMain')
 }
 
+//通知弹窗
+const notify = async () => {
+  const [res] = await promiseToArr(notificationsList());
+  notifications = res;
+  ElNotification({
+    title: notifications[0].title,
+    message: notifications[0].content,
+    type: 'warning',
+  })
+}
 
+
+
+// 空气质量接口
+const raychartlistMed = async () => {
+  const [res] = await promiseToArr(getChartsList());
+  const morList = [];
+  const noonList = [];
+  const evenList = [];
+  cityAQI.value.title = res[0].title;
+  morList.push(
+    res[0].aqi,
+    res[0].pm2,
+    res[0].pm10,
+    res[0].co,
+    res[0].no2,
+    res[0].so2
+  );
+  cityAQI.value.mor_lst.push(morList);
+  noonList.push(
+    res[1].aqi,
+    res[1].pm2,
+    res[1].pm10,
+    res[1].co,
+    res[1].no2,
+    res[1].so2
+  );
+  cityAQI.value.noon_lst.push(noonList);
+  evenList.push(
+    res[2].aqi,
+    res[2].pm2,
+    res[2].pm10,
+    res[2].co,
+    res[2].no2,
+    res[2].so2
+  );
+  cityAQI.value.even_lst.push(evenList);
+  // });
+};
+// 入住率接口
+const barchartlistMed = async () => {
+  const [res] = await promiseToArr(getbarChartsList());
+  const bardata = res;
+  bardata.forEach((element) => {
+    consumetable.value.date_lst.push(element.date);
+    consumetable.value.forecast_lst.push(element.forecastcount);
+    consumetable.value.real_lst.push(element.realcount);
+  });
+};
 
 onMounted(() => {
+  raychartlistMed()
+  barchartlistMed()
   mainApp = new Main()
   mainApp.registLabelClickCallback((_dataInfo) => {
-    // console.log('click')
     dataInfo.value = _dataInfo;
-
   })
+  notify()
 })
 onBeforeUnmount(() => {
   mainApp.beforeDestroy()
 })
-
 
 
 
@@ -219,6 +326,9 @@ onBeforeUnmount(() => {
   padding: 0;
 }
 
+.container_box{
+  overflow-x: hidden;
+}
 .left-menu {
   //让Menu占满整个高度
   height: 100vh;
@@ -311,5 +421,18 @@ onBeforeUnmount(() => {
   color: #ffffff;
   font-size: 18px;
   padding: 8px 12px;
+}
+//覆盖通知弹框的样式
+.el-notification {
+  // background-color: rgb(0, 0, 0);
+  background:rgba(4, 20, 38);
+  color: #fff;
+}
+
+.el-notification__title {
+  color: #fff;
+}
+.el-notification__content{
+  color: #fff;
 }
 </style>

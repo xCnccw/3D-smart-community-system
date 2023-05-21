@@ -1,7 +1,6 @@
 import $axios from "./axios.js";
 
 export const getChartsList = (params) => {
-  console.log(params, 6666);
   return $axios.post(`/api/raycharts/list`, params);
 };
 
@@ -11,7 +10,6 @@ export const updateCharts = (params) => {
 };
 
 export const getbarChartsList = (params) => {
-  console.log(params, 6666);
   return $axios.post(`/api/barcharts/list`, params);
 };
 

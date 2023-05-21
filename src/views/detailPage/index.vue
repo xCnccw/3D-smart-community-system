@@ -291,6 +291,9 @@ export default {
     padding: 0;
     background-color: #0b0d1c;
 }
+body{
+    margin:0
+}
 
 .BuildingDetail {
     width: 100%;

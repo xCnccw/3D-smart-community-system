@@ -74,18 +74,14 @@ const truck = ref(null)
 const car = ref(null)
 const bus = ref(null)
 const followTruck = ref(false)
+const followBus=ref(false)
 const move_rate = ref(0.0005)
 const effectComposer = ref()
 const outlinePass = ref()
 const t = ref(0)
 const loading = ref(true)
 const car_staytime = ref([])
-const cityAQI = ref({
-    title: "",
-    mor_lst: [],
-    noon_lst: [],
-    even_lst: [],
-})
+
 const consumetable = ref({
     title: "",
     date_lst: [],
@@ -287,6 +283,8 @@ export class Main {
         this.click = click
         this.controls = controls
         this.initViewpoint = initViewpoint
+        this.initCar=initCar
+        this.initBusView=initBusView
         this.renderer = renderer
         this.lockcontrols = new PointerLockControls(camera, document.body);
         //设置相机需要每一帧数更新OrbitControls
@@ -482,9 +480,16 @@ export class Main {
         function initViewpoint() {
             console.log('12312312312312131231');
             followTruck.value = false;
+            followBus.value=false
             controls.position0.set(1000, 1500, 3500);
             this.normalView = true;
             controls.reset();
+        }
+        function initCar(){
+            followTruck.value = true;
+        }
+        function initBusView(){
+            followBus.value=true
         }
         // initViewpoint()
         // 初始化汽车路线
@@ -563,6 +568,17 @@ export class Main {
                     truck.position.set(point.x, point.y, point.z);
                     // 向下一个要走的点方向看齐
                     truck.lookAt(point_next.x, point_next.y, point_next.z);
+                    if (followTruck.value) {
+                        camera.position.set(point.x, point.y + 45, point.z);
+                        camera.lookAt(point_next.x, point_next.y + 45, point_next.z);
+                        controls.position0.set(point.x, point.y + 45, point.z);
+                        // 将控制器看齐下一个点的位置(摆正车头的位置)
+                        controls.target.set(
+                          point_next.x,
+                          point_next.y + 45,
+                          point_next.z
+                        );
+                      }
                 }
             }
         }
@@ -575,6 +591,17 @@ export class Main {
                 const point_next = curve.getPoint(progress.value + move_rate.value);
                 if (point && point.x) {
                     truck.position.set(point.x, point.y, point.z);
+                    if (followBus.value) {
+                        camera.position.set(point.x, point.y + 80, point.z);
+                        camera.lookAt(point_next.x, point_next.y + 80, point_next.z);
+                        controls.position0.set(point.x, point.y + 80, point.z);
+                        // 将控制器看齐下一个点的位置(摆正车头的位置)
+                        controls.target.set(
+                          point_next.x,
+                          point_next.y + 80,
+                          point_next.z
+                        );
+                      }
                 }
             }
             // 将canvas车速标签跟随汽车移动显示
@@ -687,7 +714,6 @@ export class Main {
 
         // 第一人称移动 需要在render()里面实时更新位置
         const firstPersonMove = () => {
-            // if (this.lockcontrols.isLocked) {
             // 每次都获取上一次的间隔时间 因为根据性能不同每次调用循环函数的时间都是不一样的
             const time = performance.now();
             // 为了不让性能影响操作的速度 我们将他设置为一个因数 所谓性能高那么间隔时间就短
@@ -718,7 +744,6 @@ export class Main {
                 this.canJump = true;
             }
             this.prevTime = time;
-            // }
         }
         //环游社区
         // function tourCity() {
