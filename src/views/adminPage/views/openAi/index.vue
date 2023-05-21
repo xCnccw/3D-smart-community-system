@@ -2,10 +2,10 @@
     <div class="openAI">
         <div class="AIbox">
             <span>AI:</span>
-            <el-input class="answer" :rows="8" type="textarea" v-model="AIanswer">
+            <el-input class="answer" :rows="17" type="textarea" v-model="AIanswer">
             </el-input>
         </div>
-        <el-input class="askinput" v-model="question" placeholder="请输入" :suffix-icon="Calendar">
+        <el-input class="askinput" v-model="question" placeholder="请输入">
             <template #append>
                 <el-button :icon="Promotion" @click="AskOpenai" />
             </template>
@@ -32,8 +32,8 @@ const AskOpenai = () => {
         stop: null
     };
     aiApi.getAianswer(data).then((res) => {
-        console.log(res.data.choices[0].text);
-        AIanswer.value = res.data.choices[0].text
+        const pattern = /^[`~!@#$^\-&*()=|{}':;',\\[\].<>\/?~！@#￥……&*（）——|{}【】'；：""'。，、？\s]+/g;
+        AIanswer.value = res.data.choices[0].text.replace(pattern, '');
     })
 }
 </script>
@@ -61,13 +61,15 @@ const AskOpenai = () => {
 .AIbox {
     display: flex;
     position: fixed;
-    z-index: 1;
-    top: 200px;
-    left: 56.25%;
-    transform: translateX(-50%);
+    // z-index: 1;
+    top: 150px;
+    // left: 56.25%;
+    margin-left: 50px;
+    // transform: translateX(-50%);
 
     .answer {
-        width: 800px;
+        width: 1500px;
+        height: 600px;
         margin-left: 15px;
     }
 }

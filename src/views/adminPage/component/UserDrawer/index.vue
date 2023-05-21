@@ -65,13 +65,17 @@ const Decide = () => {
 //类型下拉选项框
 const TypeOptions = reactive([
     {
-        type: "1",
+        type: "0",
         label: '超级管理员',
     },
     {
-        type: "0",
+        type: "1",
+        label: '普通管理员',
+    },
+    {
+        type: "2",
         label: '普通角色',
-    }
+    },
 ])
 
 //监视Editform,再父组件中每次点击会传入（修改）Editform的值

@@ -28,7 +28,7 @@ const handleMenuColor = (val) => {
 const router = useRouter()
 
 onMounted(() => {
-    router.push('/userlist')
+    router.push('/carlist')
 })
 </script>
 
