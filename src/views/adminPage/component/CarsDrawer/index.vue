@@ -36,7 +36,7 @@ const emit = defineEmits(['handleClose'])
 
 const title = ref('增加车辆')
 const form = reactive({
-    id: '',
+    id: null,
     name: '',
     license: '',
     objectlistId: '',
@@ -49,7 +49,7 @@ const handleClose = (() => {
 const Decide = () => {
     if (Editform.value.id == '' || Editform.value.id == undefined) {
         title.value = '增加车辆'
-        form.id = ''
+        form.id = null
         form.name = ''
         form.license = ''
         form.objectlistId = ''

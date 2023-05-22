@@ -41,7 +41,6 @@ import { onMounted, reactive, ref, watchEffect, watch } from 'vue';
 import { Search, Plus } from '@element-plus/icons-vue';
 import { useLink } from 'vue-router';
 import Drawer from '@/views/adminPage/component/CarsDrawer/index.vue';
-// import * as carsApi from '@/apis/cars/info.js';
 import * as carsApi from '@/apis/cars'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -59,6 +58,7 @@ const getCarsList = async () => {
     [res] = await promiseToArr(carsApi.getCarsList(params))
     carslist.value = res
     Cachelist.value = res
+    console.log(res, "车辆列表");
     const options = {
         keys: ['license']
     }
@@ -157,6 +157,7 @@ const handleEdit = (row) => {
 }
 
 const Submit = (form) => {
+    console.log(form.id, form.name, form.objectlistId, form.license, "传参");
     params.id = form.id
     params.name = form.name
     params.objectlistId = form.objectlistId

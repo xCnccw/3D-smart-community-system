@@ -39,6 +39,8 @@ import * as ntApi from '@/apis/notifications'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import { ElMessage, ElMessageBox } from 'element-plus'
 import Fuse from 'fuse.js';
+//格式化时间
+import moment from 'moment';
 
 var res = ref()
 const params = {}
@@ -52,6 +54,12 @@ const getNotificationsList = async () => {
     [res] = await promiseToArr(ntApi.getnotificationsList(params))
     notificationslist.value = res
     Cachelist.value = res
+    res.map(item => {
+        //格式化后端返回的JSON格式时间
+        let dateTime = moment(item.releaseTime).format("YYYY-MM-DD HH:mm:ss");
+        item.releaseTime = dateTime
+    })
+    console.log(res, "通知列表")
     const options = {
         keys: ['title']
     }
@@ -169,7 +177,7 @@ const Submit = (form) => {
         ).then(() => {
             promiseToArr(ntApi.updatenotifications(params)).then((res) => {
                 getNotificationsList()
-                console.log(res,"通知修改");
+                console.log(res, "通知修改");
             })
             ElMessage({
                 type: 'success',

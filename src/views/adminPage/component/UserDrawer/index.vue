@@ -7,6 +7,13 @@
             <el-form-item label="姓名" label-width="3vw">
                 <el-input v-model="form.username" placeholder="请输入..."></el-input>
             </el-form-item>
+            <el-form-item label="密码" label-width="3vw">
+                <el-input v-model="form.password" :type="pwdShow ? 'input' : 'password'" placeholder="请输入...">
+                    <template #append>
+                        <el-button :icon="View" @click="handlePwdShow" />
+                    </template>
+                </el-input>
+            </el-form-item>
             <el-form-item label="类型" label-width="3vw">
                 <el-select size="small" v-model="form.type" placeholder="请选择">
                     <el-option v-for="option in TypeOptions" :key="option.type" :label="option.label"
@@ -23,6 +30,7 @@
 
 <script setup>
 import { ref, onMounted, reactive, toRefs, watch } from "vue";
+import { View } from "@element-plus/icons-vue";
 
 const props = defineProps({
     isShow: Boolean,
@@ -36,11 +44,14 @@ const title = ref('增加角色')
 const form = reactive({
     id: '',
     username: '',
+    password: '',
     type: '',
+    label: '',
 })
 
 const isShownow = ref(false)
 const handleClose = (() => {
+    pwdShow.value = false
     emit("handleClose", isShownow)
 })
 const Decide = () => {
@@ -48,18 +59,16 @@ const Decide = () => {
         title.value = '增加角色'
         form.id = ''
         form.username = ''
+        form.password = ''
         form.type = ''
+        form.label = ''
     }
     else {
-        //让el-select中的v-model="form.type"显示为对应的label
-        TypeOptions.map(option => {
-            if (Editform.value.type == option.type) {
-                form.type = option.label
-            }
-        })
         title.value = '修改信息'
         form.id = Editform.value.id
         form.username = Editform.value.username
+        form.password = Editform.value.password
+        form.type = Editform.value.type
     }
 }
 //类型下拉选项框
@@ -84,6 +93,7 @@ watch(Editform, () => {
 })
 
 const Submit = () => {
+    pwdShow.value = false
     emit("Submit", form)
 }
 
@@ -91,6 +101,11 @@ const Cancel = () => {
     handleClose()
 }
 
+const pwdShow = ref(false)
+
+const handlePwdShow = () => {
+    pwdShow.value = !pwdShow.value
+}
 </script>
 
 <style lang="scss">

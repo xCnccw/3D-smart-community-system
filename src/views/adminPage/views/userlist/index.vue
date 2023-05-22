@@ -18,6 +18,11 @@
         <el-table :data="userlist.value" class="table" stripe="true" size="large" height="680">
             <el-table-column prop="id" label="Id" />
             <el-table-column prop="username" label="姓名" />
+            <el-table-column prop="username" label="姓名">
+                <template #default="scope">
+                    {{ '********' }}
+                </template>
+            </el-table-column>
             <el-table-column prop="typeLabel" label="类型" />
             <el-table-column fixed="right" label="操作">
                 <template #default="scope">
@@ -40,12 +45,10 @@ import { showElLoading, promiseToArr } from '@/utils/common.js';
 import Fuse from 'fuse.js';
 import * as aiApi from '@/apis/OpenAi_API/openai.js';
 
-
 const Searchinput = ref('')
 const Searchlist = ref([])
 var res = ref()
 const params = {}
-// const userlist = reactive([])
 const userlist = reactive([])
 const Cachelist = reactive([])
 
@@ -77,7 +80,7 @@ const getUserList = async () => {
     res.map(item => {
         if (item.type == 0) {
             item.typeLabel = "超级管理员"
-        } else if(item.type == 1) {
+        } else if (item.type == 1) {
             item.typeLabel = "普通管理员"
         }
         else {
@@ -185,9 +188,11 @@ const handleAdd = () => {
 
 const handleEdit = (row) => {
     if (row.typeLabel == "超级管理员") {
-        row.type = 1
+        row.type = "0"
+    } else if (row.typeLabel == "普通管理员") {
+        row.type = "1"
     } else {
-        row.type = 0
+        row.type = "2"
     }
     Editform.value = row
     isShow.value = true
@@ -195,9 +200,10 @@ const handleEdit = (row) => {
 }
 
 const Submit = (form) => {
-    console.log(form.username, form.type, "Userlist");
+    console.log(form.type,form.username, "参数信息");
     params.id = form.id
     params.username = form.username
+    params.password = form.password
     params.type = form.type
     if (isNew.value) {
         ElMessageBox.confirm(
@@ -250,7 +256,6 @@ const Submit = (form) => {
 }
 
 const handleisShow = (isShownow) => {
-    console.log("userlist");
     isShow.value = isShownow.value
 }
 </script>
