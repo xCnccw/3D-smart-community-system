@@ -14,8 +14,8 @@
             <el-table-column prop="height" label="高度" />
             <el-table-column prop="square" label="平方" />
             <el-table-column prop="floor" label="楼层数" />
-            <el-table-column prop="malecount" label="实际入住数" />
-            <el-table-column prop="femalecount" label="预测入住数" />
+            <el-table-column prop="malecount" label="男性人数" />
+            <el-table-column prop="femalecount" label="女性人数" />
             <el-table-column fixed="right" label="操作">
                 <template #default="scope">
                     <el-button size="small" type="primary" @click="handleEdit(scope.row)">修改</el-button>

@@ -17,9 +17,9 @@
         <el-table :data="buildingslist.value" class="table" stripe="true" size="large" height="680">
             <el-table-column prop="id" label="Id" />
             <el-table-column prop="name" label="建筑名" />
-            <el-table-column prop="livecount" label="居民数" />
+            <!-- <el-table-column prop="livecount" label="居民数" />
             <el-table-column prop="floorcount" label="楼层数" />
-            <el-table-column prop="checkinrate" label="入住率" />
+            <el-table-column prop="checkinrate" label="入住率" /> -->
             <el-table-column prop="objectlistId" label="状态" />
             <el-table-column fixed="right" label="操作">
                 <template #default="scope">

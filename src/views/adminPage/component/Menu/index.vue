@@ -1,13 +1,13 @@
 <template>
     <el-menu :default-active="activePath" @select="handleSelect" :active-text-color="activeTextColor"
-        :background-color="backgroundColor" class="left-menu" :text-color="textColor" :collapse="isCollapse" router>
+        :background-color="backgroundColor" class="left-menu" :text-color="textColor" :collapse="isCollapse"  router   :default-openeds="['/city','/notices','/chart','/user']" >
         <template v-for="title in MenuList" :key="title.index">
             <component :is="title.children ? 'el-sub-menu' : 'el-menu-item'" :class="title.children ? '' : 'home'"
-                :style="adminstyle ? 'background-color: #ffbb00' : 'background-color:#FFE9A4'" :index="title.index"
+                :style="adminstyle ? 'background-color: #ffbb00' : 'background-color:#FFE9A4'"  :index="title.index"
                 v-if="title.index !== '/user' || userInfo.type == 0">
                 <template #title>
                     <el-icon :size="20">
-                        <component :is="title.icon"></component>
+                        <component :is="title.icon" ></component>
                     </el-icon>
                     {{ title.menutitle }}
                     <!-- <button @click="">显示当前页路由</button> -->
@@ -107,29 +107,29 @@ MenuList.value = [
                 // icon: Avatar,
             },
             {
-                itemname: "建筑列表",
+                itemname: "建筑状态",
                 index: '/buildingslist',
+                // icon: Avatar,
+            },
+            {
+                itemname: "建筑详情",
+                index: '/BDdetailslist',
                 // icon: Avatar,
             },
         ]
     },
     {
-        menutitle: '图表管理',
+        menutitle: '公共管理',
         index: '/chart',
         icon: DataLine,
         children: [
             {
-                itemname: "雷达图",
+                itemname: "空气质量",
                 index: '/piecharts',
                 // icon: DataLine,
             },
             {
-                itemname: "饼图",
-                index: '/BDdetailslist',
-                // icon: Avatar,
-            },
-            {
-                itemname: "柱状图",
+                itemname: "户数分析",
                 index: '/barcharts',
                 // icon: Avatar,
             },

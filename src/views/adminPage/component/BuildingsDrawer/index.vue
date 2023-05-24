@@ -1,13 +1,13 @@
 <template>
     <el-drawer v-model="isShow" :before-close="handleClose" :title="title" class="drawer">
         <el-form :model="form">
-            <el-form-item label="Id" label-width="3vw">
+            <el-form-item label="Id" label-width="4vw">
                 <el-input v-model="form.id" placeholder="系统自动分配" readonly></el-input>
             </el-form-item>
-            <el-form-item label="建筑名" label-width="3vw">
+            <el-form-item label="建筑名" label-width="4vw">
                 <el-input v-model="form.name" placeholder="请输入..."></el-input>
             </el-form-item>
-            <el-form-item label="居民数" label-width="3vw">
+            <!-- <el-form-item label="居民数" label-width="3vw">
                 <el-input v-model="form.livecount" placeholder="请输入..."></el-input>
             </el-form-item>
             <el-form-item label="楼层数" label-width="3vw">
@@ -15,8 +15,8 @@
             </el-form-item>
             <el-form-item label="入住率" label-width="3vw">
                 <el-input v-model="form.checkinrate" placeholder="请输入..."></el-input>
-            </el-form-item>
-            <el-form-item label="状态" label-width="3vw">
+            </el-form-item> -->
+            <el-form-item label="状态" label-width="4vw">
                 <el-input v-model="form.objectlistId" maxlength="1" minlength="1" show-word-limit="1"
                     placeholder="请输入..."></el-input>
             </el-form-item>

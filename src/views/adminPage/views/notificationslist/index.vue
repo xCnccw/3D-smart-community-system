@@ -8,7 +8,7 @@
                     </el-icon>
                     增加通知
                 </el-button></a>
-            <el-input class="search" v-model="Searchinput" placeholder="请输入车牌号" @keyup="Searching(Searchinput)" clearable>
+            <el-input class="search" v-model="Searchinput" placeholder="请输入标题" @keyup="Searching(Searchinput)" clearable>
                 <template #append>
                     <el-button :icon="Search" @click="Searchname()" />
                 </template>
