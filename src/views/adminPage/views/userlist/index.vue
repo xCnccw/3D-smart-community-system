@@ -11,7 +11,7 @@
             <!-- @click="search(Searchinput)" -->
             <el-input class="search" v-model="Searchinput" @keyup="Searching(Searchinput)" placeholder="请输入姓名" clearable>
                 <template #append>
-                    <el-button :icon="Search" @click="AskOpenai" />
+                    <el-button :icon="Search"/>
                 </template>
             </el-input>
         </div>
@@ -43,7 +43,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import * as userApi from '@/apis/user'
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import Fuse from 'fuse.js';
-import * as aiApi from '@/apis/OpenAi_API/openai.js';
 
 const Searchinput = ref('')
 const Searchlist = ref([])
@@ -103,19 +102,6 @@ onMounted(() => {
     getUserList()
 })
 
-const AskOpenai = () => {
-    const params = {
-        model: 'text-davinci-003',
-        temperature: 0.5,
-        prompt: '早上好',
-        max_tokens: 500,
-        n: 1,
-        stop: null
-    }
-    aiApi.getAianswer(params).then((res) => {
-        console.log(res);
-    })
-}
 
 
 // 搜索按钮功能

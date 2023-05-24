@@ -1,13 +1,13 @@
-import axios from 'axios';
+import axios from "axios";
 
-const apiKey = "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"
+const apiKey = "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";
 
 const instance = axios.create({
-    baseURL: 'https://api.openai.com',
-    headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`
-    }
+  baseURL: "https://api.openai.com",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${apiKey}`,
+  },
 });
 
 export default instance;
