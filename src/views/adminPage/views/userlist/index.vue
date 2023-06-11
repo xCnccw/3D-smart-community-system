@@ -186,7 +186,6 @@ const handleEdit = (row) => {
 }
 
 const Submit = (form) => {
-    console.log(form.type,form.username, "参数信息");
     params.id = form.id
     params.username = form.username
     params.password = form.password

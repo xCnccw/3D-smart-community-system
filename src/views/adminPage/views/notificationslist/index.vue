@@ -59,7 +59,6 @@ const getNotificationsList = async () => {
         let dateTime = moment(item.releaseTime).format("YYYY-MM-DD HH:mm:ss");
         item.releaseTime = dateTime
     })
-    console.log(res, "通知列表")
     const options = {
         keys: ['title']
     }
@@ -177,7 +176,6 @@ const Submit = (form) => {
         ).then(() => {
             promiseToArr(ntApi.updatenotifications(params)).then((res) => {
                 getNotificationsList()
-                console.log(res, "通知修改");
             })
             ElMessage({
                 type: 'success',

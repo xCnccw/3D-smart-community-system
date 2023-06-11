@@ -26,6 +26,7 @@
                                         建筑层数：{{ infoList.floor }}
                                     </div>
                                     <div>建筑占地面积：{{ infoList.square }}</div>
+                                    <div>建筑状态：{{ bdstatus }}</div>
                                 </div>
                                 <div class="right_top" id="pieTest"></div>
                             </div>
@@ -54,6 +55,7 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { showElLoading, promiseToArr } from '@/utils/common.js';
 import { buildingDetail } from "@/apis/city.js";
+import { getBuildingsList } from "@/apis/buildings.js";
 export default {
     setup() {
         let scene, camera, mesh, renderer, controls
@@ -69,6 +71,7 @@ export default {
             { value: 80, name: "40-50岁" },
             { value: 60, name: "60岁以上" },
         ];
+        const bdstatus = ref('0')
         const infoList = reactive({
             name: "1",
             height: "1",
@@ -97,7 +100,6 @@ export default {
         //监听画面变化，更新渲染
         const resize = () => {
             window.addEventListener('resize', () => {
-                console.log('画面变化了');
                 //更新摄像头
                 camera.aspect = window.innerWidth / window.innerHeight
                 //更新摄像机投影矩阵
@@ -202,6 +204,21 @@ export default {
 
         const buildingDetailMed = async () => {
             const [res] = await promiseToArr(buildingDetail());
+            const [res2] = await promiseToArr(getBuildingsList())
+            res2.forEach((item) => {
+                if (item.name === SoName) {
+                    if (item.objectlistId == "1") {
+                        bdstatus.value = "正常";
+                    }
+                    if (item.objectlistId == "2") {
+                        bdstatus.value = "火灾";
+                    }
+                    if (item.objectlistId == "3"||item.objectlistId == "0") {
+                        bdstatus.value = "特殊情况";
+                    }
+
+                }
+            });
             res.forEach((item) => {
                 if (item.name === SoName) {
                     infoList.name = item.name;
@@ -270,6 +287,7 @@ export default {
         }
 
         return {
+            bdstatus,
             infoList
         }
     }
@@ -281,18 +299,14 @@ export default {
 
 <style lang="scss">
 @charset "utf-8";
-
-/********** Global **********/
-/*
- *常用背景色： #0f1c30 #0b0f34 (6,64,102) (29,45,57) (7,33,58) (8,13,28) (15,43,36)
- */
 * {
     margin: 0;
     padding: 0;
     background-color: #0b0d1c;
 }
-body{
-    margin:0
+
+body {
+    margin: 0
 }
 
 .BuildingDetail {
@@ -504,5 +518,4 @@ body{
     right: 20px;
 }
 
-/* 将详情页的接口写好 */
-</style>
+/* 将详情页的接口写好 */</style>

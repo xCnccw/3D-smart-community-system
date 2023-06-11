@@ -167,7 +167,6 @@ const Submit = (form) => {
             }
         ).then(() => {
             promiseToArr(bdApi.addBuildings(params)).then((res) => {
-                console.log(res);
                 getBuildingsList()
             })
             ElMessage({

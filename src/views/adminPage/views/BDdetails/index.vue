@@ -112,7 +112,6 @@ const Submit = (form) => {
         }
     ).then(() => {
         promiseToArr(chartsApi.updateBDdetails(params)).then((res) => {
-            // console.log(res, "接受到的数据");
             getBDdtList()
         })
         ElMessage({

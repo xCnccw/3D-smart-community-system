@@ -3,9 +3,9 @@ import { TWEEN } from "three/examples/jsm/libs/tween.module.min";
 import { useRouter } from 'vue-router';
 export const clickPick = (_this) => {
   const router = useRouter();
-  console.log('mmm',_this);
 
-  console.log(_this.dataInfo);
+
+
   const rayCaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   let x, y;
@@ -15,7 +15,7 @@ export const clickPick = (_this) => {
   window.addEventListener("dblclick", onMouseDbClick);
   // 点击卡片的显示位置
   function showCard(element) {
-    console.log('6667778889',element);
+
     element.style.display = "block";
     element.style.position = "absolute";
     element.style.left = `180px`;
@@ -82,7 +82,7 @@ export const clickPick = (_this) => {
     mouse.x = ((x - rect.left) / _this.container.clientWidth) * 2 - 1;
     mouse.y = -((y - rect.top) / _this.container.clientHeight) * 2 + 1;
     mouse.x -= 0.05;
-    console.log('click',mouse);
+
     // 通过摄像机和鼠标位置来更新射线
     rayCaster.setFromCamera(mouse, _this.camera);
     // 第二个参数表示是否检查他的后代
@@ -263,7 +263,7 @@ export const clickPick = (_this) => {
           showCard(label, x, y);
           break;
         default:
-          console.log(label);
+
           label.style.display = "none";
           selectedObjects.pop();
           break;
@@ -308,14 +308,14 @@ export const clickPick = (_this) => {
         // label.textContent = soName
         selectedObjects.pop();
         selectedObjects.push(intersects[0].object);
-        console.log('intersects',intersects[0].object);
+
         _this.outlinePass.selectedObjects = selectedObjects;
-        console.log('nba',_this.outlinePass.selectedObjects);
+
       }
       _this.effectController.A = object_name;
-      console.log('AAA',_this.effectController.A);
+
       _this.click = true;
-      console.log(_this.click);
+
     }
   }
   function onMouseDbClick(event) {

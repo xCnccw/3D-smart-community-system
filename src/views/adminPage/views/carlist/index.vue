@@ -58,7 +58,6 @@ const getCarsList = async () => {
     [res] = await promiseToArr(carsApi.getCarsList(params))
     carslist.value = res
     Cachelist.value = res
-    console.log(res, "车辆列表");
     const options = {
         keys: ['license']
     }
@@ -157,7 +156,6 @@ const handleEdit = (row) => {
 }
 
 const Submit = (form) => {
-    console.log(form.id, form.name, form.objectlistId, form.license, "传参");
     params.id = form.id
     params.name = form.name
     params.objectlistId = form.objectlistId

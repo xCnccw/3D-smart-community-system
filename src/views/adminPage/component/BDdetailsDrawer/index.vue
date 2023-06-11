@@ -16,10 +16,10 @@
             <el-form-item label="楼层数" label-width="6vw">
                 <el-input v-model="form.floor" placeholder="请输入..."></el-input>
             </el-form-item>
-            <el-form-item label="实际入住数" label-width="6vw">
+            <el-form-item label="男性人数" label-width="6vw">
                 <el-input v-model="form.malecount" placeholder="请输入..."></el-input>
             </el-form-item>
-            <el-form-item label="预测入住数" label-width="6vw">
+            <el-form-item label="女性人数" label-width="6vw">
                 <el-input v-model="form.femalecount" placeholder="请输入..."></el-input>
             </el-form-item>
         </el-form>

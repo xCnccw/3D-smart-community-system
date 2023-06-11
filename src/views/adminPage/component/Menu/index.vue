@@ -54,7 +54,6 @@ watch(() => route.path, (newVal, oldVal) => {
 })
 
 watch(() => adminstyle.value, (newVal, oldVal) => {
-    console.log(store.state.userType, "菜单的userType");
     if (newVal) {
         backgroundColor.value = "#545c64"
         textColor.value = "#fff"

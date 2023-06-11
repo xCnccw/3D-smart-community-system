@@ -229,7 +229,6 @@ export class Main {
             let obj = await initModelMed("city");
             showElLoading(false);
             cloneBuilding(obj.clone());
-            console.log('AsyncInitModel');
             // 初始化行驶路线
             initCurve(obj);
             initTruckCurve(obj);
@@ -242,7 +241,6 @@ export class Main {
         AsyncInitModel()
         // 创建场景
         let scene = new THREE.Scene();
-        console.log(scene);
         // 创建相机
         let camera = new THREE.PerspectiveCamera(
             45,
@@ -384,7 +382,6 @@ export class Main {
             this.gui.add(options, "Helper").onChange((val) => {
                 if (val) {
                     const axes = new THREE.AxesHelper(5000);
-                    console.log(axes);
                     scene.add(axes);
                     const helper = new THREE.GridHelper(10000, 2, 0xffffff, 0xffffff);
                     scene.add(helper);
@@ -466,9 +463,7 @@ export class Main {
             "../../public/static/images/Park2/posz.jpg",
             "../../public/static/images/Park2/negz.jpg"
         ];
-        console.log('0000', scene);
         const changeSKyBox = (type, scene) => {
-            console.log('6667', type, scene);
             if (type === "Star") {
                 scene.background = new THREE.CubeTextureLoader().load(starUrls);
             } else {
@@ -478,7 +473,6 @@ export class Main {
 
         //初始化视角
         function initViewpoint() {
-            console.log('12312312312312131231');
             followTruck.value = false;
             followBus.value=false
             controls.position0.set(1000, 1500, 3500);
@@ -636,7 +630,6 @@ export class Main {
             );
             this.outlinePass.edgeStrength = 5;
             this.outlinePass.visibleEdgeColor.set(0x00ffff);
-            console.log('cba', this.outlinePass);
             this.effectComposer.addPass(this.outlinePass);
             // FXAAShader主要解决锯齿问题
             const effectFXAA = new ShaderPass(FXAAShader);
@@ -646,10 +639,6 @@ export class Main {
             );
             effectFXAA.renderToScreen = true;
             this.effectComposer.addPass(effectFXAA);
-            // 获取当前组件实例对象
-            // const ctx = getCurrentInstance()
-            // console.log(ctx, '111');
-            // console.log(controls);
             clickPick(this);
 
         };
@@ -727,7 +716,6 @@ export class Main {
             this.direction.z = Number(this.moveForward) - Number(this.moveBackward);
             this.direction.x = Number(this.moveLeft) - Number(this.moveRight);
             this.direction.normalize(); // 确保了各个方向的一致运动
-            // console.log('this.direction',this.direction);
             // 有一个缓冲作用 避免快速启动 更贴切现实操作 为了保证鼠标抬起后，场景不直接暂停，而是有一个简短的过渡效果
             if (this.moveForward || this.moveBackward)
                 this.velocity.z -= this.direction.z * 2000.0 * delta;
@@ -761,7 +749,6 @@ export class Main {
 
 
         renderer.setSize(window.innerWidth, window.innerHeight);
-        console.log(this.lockcontrols.isLocked);
         const render = () => {
             // showElLoading();
             this.animationID = requestAnimationFrame(render);
@@ -774,13 +761,11 @@ export class Main {
             if (this.lockcontrols.isLocked) {
                 firstPersonMove();
             }
-            // console.log('666');
             stats.update();
             // 刷新动画
             TWEEN.update();
             const clock = new THREE.Clock();
             const delta = clock.getDelta();
-            // console.log('delta',delta);
             // effectComposer里面是对renderer渲染器进行后期处理,则可以在他身上进行render()
             if (this.click) {
                 this.effectComposer.render(delta);
@@ -797,7 +782,6 @@ export class Main {
 
         //监听画面变化，更新渲染
         window.addEventListener('resize', () => {
-            console.log('画面变化了');
             //更新摄像头
             camera.aspect = window.innerWidth / window.innerHeight
             //更新摄像机投影矩阵
@@ -811,10 +795,8 @@ export class Main {
 
     tourCity() {
         this.normalView = false;
-        console.log(this.camera);
         this.camera.position.y = 100;
         this.camera.lookAt(500, 100, 0);
-        console.log(this, '818');
         this.lockcontrols.getObject().position.x = 0;
         this.lockcontrols.getObject().position.y = 100;
         this.lockcontrols.getObject().position.z = 580;
@@ -825,17 +807,14 @@ export class Main {
         this.labelClick = cb;
     }
     changdataInfo() {
-        console.log('doSomething', this.dataInfo);
+        // console.log('doSomething', this.dataInfo);
     }
     beforeDestroy() {
         this.scene.clear();
-        console.log(this);
         document.body.removeChild(this.stats.dom);
         this.camera = null;
-        console.log('mnb', this.gui);
         document.body.removeChild(this.gui.domElement); // 从 DOM 中删除该 GUI 对象
         this.gui = null; // 将 gui 成员变量设置为 null
-        console.log(this.renderer);
         cancelAnimationFrame(this.animationID);
         this.renderer.forceContextLoss();
         this.renderer.dispose();

@@ -109,7 +109,6 @@ const Submit = (form) => {
         }
     ).then(() => {
         promiseToArr(chartsApi.updatebarCharts(params)).then((res) => {
-            console.log(res, "接受到的数据");
             getChartsList()
         })
         ElMessage({

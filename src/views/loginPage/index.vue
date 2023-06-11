@@ -42,7 +42,6 @@ const isRegister = ref(false);
     if (!formRef.value) return;
     await formRef.value.validate((valid) => {
       if (valid) {
-        console.log('submit!', formModel.value);
         // loginFn();
         isRegister.value ? registerFn() : loginFn();
       }
@@ -53,7 +52,6 @@ const isRegister = ref(false);
     showElLoading();
     const { userName,passWord,password2} = formModel.value;
     if(passWord===password2){
-      console.log(userName,passWord);
       const [res] = await promiseToArr(registerApi({"userName":userName,"passWord":passWord}));
       showElLoading(false);
       if (res.status===1) return ElMessage.error(res.message || '注册失败');
@@ -75,7 +73,6 @@ const isRegister = ref(false);
     showElLoading(false);
     if (res.status===1) {return ElMessage.error(res.message || '登录失败');}
     let { token, userInfo } = res;
-    console.log(res,111);
     // store.dispatch('userInfoActions', userInfo);
     // store.dispatch('tokenActions', token);
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
